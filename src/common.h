@@ -3,7 +3,8 @@
 
 #define SDL_NS "SDL"
 
-#define SDL_FE(name) ZEND_NS_FE(SDL_NS, SDL_##name, php_sdl_##name##_info)
+#define SDL_FE(name) ZEND_NS_NAMED_FE(SDL_NS, name, zif_SDL_##name, php_sdl_##name##_info)
+#define SDL_FUNC(name) PHP_FUNCTION(SDL_##name)
 
 #define SDL_CONST_LONG(name) REGISTER_NS_LONG_CONSTANT(SDL_NS, #name, SDL_##name, CONST_CS | CONST_PERSISTENT)
 

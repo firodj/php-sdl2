@@ -5,10 +5,11 @@
 
 #include <SDL2/SDL.h>
 
+#include <src/exceptions.h>
 #include <src/sdl.h>
 
-/* {{{ proto bool SDL\init(int flags) */
-PHP_FUNCTION(SDL_init)
+/* {{{ proto void SDL\init(int flags) */
+SDL_FUNC(init)
 {
 	zend_long flags = 0;
 
@@ -16,12 +17,14 @@ PHP_FUNCTION(SDL_init)
 		return;
 	}
 	
-    RETVAL_BOOL(SDL_Init(flags) == 0);
+	if (SDL_Init(flags) != 0) {
+		php_sdl_exception(SDL_GetError());
+	}
 }
 /* }}} */
 
-/* {{{ proto bool SDL\init_subsystem(int flags) */
-PHP_FUNCTION(SDL_initSubSystem)
+/* {{{ proto void SDL\initSubSystem(int flags) */
+SDL_FUNC(initSubSystem)
 {
 	zend_long flags = 0;
 
@@ -29,12 +32,14 @@ PHP_FUNCTION(SDL_initSubSystem)
 		return;
 	}
 	
-    RETVAL_BOOL(SDL_Init(flags) == 0);
+	if (SDL_InitSubSystem(flags) != 0) {
+		php_sdl_exception(SDL_GetError());
+	}
 }
 /* }}} */
 
-/* {{{ proto void SDL\quit_subsystem(int flags) */
-PHP_FUNCTION(SDL_quitSubSystem)
+/* {{{ proto void SDL\quitSubSystem(int flags) */
+SDL_FUNC(quitSubSystem)
 {
 	zend_long flags = 0;
 
@@ -46,8 +51,8 @@ PHP_FUNCTION(SDL_quitSubSystem)
 }
 /* }}} */
 
-/* {{{ proto int SDL\was_init(int flags) */
-PHP_FUNCTION(SDL_wasInit)
+/* {{{ proto int SDL\wasInit(int flags) */
+SDL_FUNC(wasInit)
 {
 	zend_long flags = 0;
 
@@ -60,7 +65,7 @@ PHP_FUNCTION(SDL_wasInit)
 /* }}} */
 
 /* {{{ proto void SDL\quit() */
-PHP_FUNCTION(SDL_quit)
+SDL_FUNC(quit)
 {
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "") != SUCCESS) {
 		return;

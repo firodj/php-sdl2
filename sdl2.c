@@ -7,11 +7,14 @@
 
 #include <SDL2/SDL.h>
 
+#include <src/exceptions.h>
 #include <src/sdl.h>
 
 /* {{{ PHP_MINIT_FUNCTION */
 PHP_MINIT_FUNCTION(sdl2)
 {
+	PHP_MINIT(SDL_Exceptions)(INIT_FUNC_ARGS_PASSTHRU);
+
 	PHP_MINIT(SDL_SDL)(INIT_FUNC_ARGS_PASSTHRU);
 
 	return SUCCESS;
