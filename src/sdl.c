@@ -21,7 +21,7 @@ PHP_FUNCTION(SDL_init)
 /* }}} */
 
 /* {{{ proto bool SDL\init_subsystem(int flags) */
-PHP_FUNCTION(SDL_init_subsystem)
+PHP_FUNCTION(SDL_initSubSystem)
 {
 	zend_long flags = 0;
 
@@ -34,7 +34,7 @@ PHP_FUNCTION(SDL_init_subsystem)
 /* }}} */
 
 /* {{{ proto void SDL\quit_subsystem(int flags) */
-PHP_FUNCTION(SDL_quit_subsystem)
+PHP_FUNCTION(SDL_quitSubSystem)
 {
 	zend_long flags = 0;
 
@@ -47,7 +47,7 @@ PHP_FUNCTION(SDL_quit_subsystem)
 /* }}} */
 
 /* {{{ proto int SDL\was_init(int flags) */
-PHP_FUNCTION(SDL_was_init)
+PHP_FUNCTION(SDL_wasInit)
 {
 	zend_long flags = 0;
 
@@ -73,15 +73,15 @@ PHP_FUNCTION(SDL_quit)
 /* {{{ */
 PHP_MINIT_FUNCTION(SDL_SDL) 
 {
-    SDL_LONG_CONSTANT(INIT_TIMER);
-    SDL_LONG_CONSTANT(INIT_AUDIO);
-    SDL_LONG_CONSTANT(INIT_VIDEO);
-    SDL_LONG_CONSTANT(INIT_JOYSTICK);
-    SDL_LONG_CONSTANT(INIT_HAPTIC);
-    SDL_LONG_CONSTANT(INIT_GAMECONTROLLER);
-    SDL_LONG_CONSTANT(INIT_EVENTS);
-    SDL_LONG_CONSTANT(INIT_NOPARACHUTE);
-    SDL_LONG_CONSTANT(INIT_EVERYTHING);
+    SDL_CONST_LONG(INIT_TIMER);
+    SDL_CONST_LONG(INIT_AUDIO);
+    SDL_CONST_LONG(INIT_VIDEO);
+    SDL_CONST_LONG(INIT_JOYSTICK);
+    SDL_CONST_LONG(INIT_HAPTIC);
+    SDL_CONST_LONG(INIT_GAMECONTROLLER);
+    SDL_CONST_LONG(INIT_EVENTS);
+    SDL_CONST_LONG(INIT_NOPARACHUTE);
+    SDL_CONST_LONG(INIT_EVERYTHING);
 
 	return SUCCESS;
 }
