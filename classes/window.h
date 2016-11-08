@@ -4,6 +4,7 @@
 #include "zend_exceptions.h"
 
 extern zend_class_entry *sdlWindow_ce;
+extern zend_class_entry *sdlWindowPos_ce;
 
 typedef struct _php_sdl_window_t {
 	SDL_Window *w;
@@ -14,6 +15,7 @@ typedef struct _php_sdl_window_t {
 #define php_sdl_window_fetch(z) php_sdl_window_from(Z_OBJ_P(z))
 
 #define SDL_WINDOW_CONST(name) zend_declare_class_constant_long(sdlWindow_ce, ZEND_STRL(#name), SDL_WINDOW_##name);
+#define SDL_WINDOWPOS_CONST(name) zend_declare_class_constant_long(sdlWindowPos_ce, ZEND_STRL(#name), SDL_WINDOWPOS_##name);
 
 PHP_MINIT_FUNCTION(SDL_Window);
 

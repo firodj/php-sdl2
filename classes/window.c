@@ -12,6 +12,7 @@
 static zend_object_handlers php_sdl_window_handlers;
 
 zend_class_entry *sdlWindow_ce;
+zend_class_entry *sdlWindowPos_ce;
 
 static zend_object* php_sdl_window_create(zend_class_entry *ce)
 {
@@ -98,6 +99,14 @@ PHP_MINIT_FUNCTION(SDL_Window)
     SDL_WINDOW_CONST(UTILITY);
     SDL_WINDOW_CONST(TOOLTIP);
     SDL_WINDOW_CONST(POPUP_MENU);
+
+	INIT_NS_CLASS_ENTRY(ce, SDL_NS, "WindowPos", NULL);
+
+	sdlWindowPos_ce = zend_register_internal_class_ex(&ce, NULL);
+    sdlWindowPos_ce->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL;
+
+    SDL_WINDOWPOS_CONST(UNDEFINED);
+    SDL_WINDOWPOS_CONST(CENTERED);
 
 	return SUCCESS;
 }
