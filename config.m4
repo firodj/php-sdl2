@@ -39,5 +39,8 @@ if test "$PHP_SDL2" != "no"; then
   
   PHP_SUBST(SDL2_SHARED_LIBADD)
 
-  PHP_NEW_EXTENSION(sdl2, sdl2.c src/exceptions.c src/sdl.c, $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
+  PHP_NEW_EXTENSION(sdl2, \
+    sdl2.c \
+    classes/exceptions.c \
+    , $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
 fi

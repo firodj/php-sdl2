@@ -1,6 +1,6 @@
 #ifndef PHP_SDL2_H
 #define PHP_SDL2_H
-
+    
 extern zend_module_entry sdl2_module_entry;
 #define phpext_sdl2_ptr &sdl2_module_entry
 
