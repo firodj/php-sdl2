@@ -7,6 +7,7 @@
 
 #include <SDL2/SDL.h>
 
+#include <classes/common.h>
 #include <classes/exceptions.h>
 
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_init_info, 0, 0, 1)
@@ -23,7 +24,7 @@ SDL_FUNC(init)
 	}
 	
 	if (SDL_Init(flags) != 0) {
-		php_sdl_exception(SDL_GetError());
+		php_sdl_error(SDL_GetError());
 	}
 }
 /* }}} */
@@ -42,7 +43,7 @@ SDL_FUNC(initSubSystem)
 	}
 	
 	if (SDL_InitSubSystem(flags) != 0) {
-		php_sdl_exception(SDL_GetError());
+		php_sdl_error(SDL_GetError());
 	}
 }
 /* }}} */

@@ -6,14 +6,14 @@
 
 #include <classes/common.h>
 
-zend_class_entry *sdlRuntimeException_ce;
+zend_class_entry *sdlError_ce;
 
 PHP_MINIT_FUNCTION(SDL_Exceptions)
 {
 	zend_class_entry ce;
 
-	INIT_NS_CLASS_ENTRY(ce, SDL_NS, "RuntimeException", NULL);
-	sdlRuntimeException_ce = zend_register_internal_class_ex(&ce, spl_ce_RuntimeException);
+	INIT_NS_CLASS_ENTRY(ce, SDL_NS, "Error", NULL);
+	sdlError_ce = zend_register_internal_class_ex(&ce, spl_ce_RuntimeException);
 
 	return SUCCESS;
 }
