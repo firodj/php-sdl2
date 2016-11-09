@@ -1,8 +1,6 @@
 #ifndef HAVE_PHP_SDL_WINDOW_H
 #define HAVE_PHP_SDL_WINDOW_H
 
-#include "zend_exceptions.h"
-
 extern zend_class_entry *sdlWindow_ce;
 extern zend_class_entry *sdlWindowPos_ce;
 

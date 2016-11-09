@@ -42,6 +42,7 @@ if test "$PHP_SDL2" != "no"; then
   PHP_NEW_EXTENSION(sdl2, \
     sdl2.c \
     classes/exceptions.c \
+    classes/renderer.c \
     classes/window.c \
     , $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
 fi

@@ -9,6 +9,7 @@
 
 #include <classes/common.h>
 #include <classes/exceptions.h>
+#include <classes/renderer.h>
 #include <classes/window.h>
 
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_init_info, 0, 0, 1)
@@ -111,6 +112,7 @@ PHP_MINIT_FUNCTION(sdl2)
     SDL_CONST_LONG(INIT_EVERYTHING);
 
 	PHP_MINIT(SDL_Exceptions)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(SDL_Renderer)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Window)(INIT_FUNC_ARGS_PASSTHRU);
 
 	return SUCCESS;
