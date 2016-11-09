@@ -63,7 +63,7 @@ SDL_FUNC(quitSubSystem)
 		return;
 	}
 	
-    SDL_QuitSubSystem(flags);
+	SDL_QuitSubSystem(flags);
 }
 /* }}} */
 
@@ -80,7 +80,7 @@ SDL_FUNC(wasInit)
 		return;
 	}
 	
-    RETVAL_LONG(SDL_WasInit(flags));
+	RETVAL_LONG(SDL_WasInit(flags));
 }
 /* }}} */
 
@@ -94,22 +94,22 @@ SDL_FUNC(quit)
 		return;
 	}
 	
-    SDL_Quit();
+	SDL_Quit();
 }
 /* }}} */
 
 /* {{{ PHP_MINIT_FUNCTION */
 PHP_MINIT_FUNCTION(sdl2)
 {
-    SDL_CONST_LONG(INIT_TIMER);
-    SDL_CONST_LONG(INIT_AUDIO);
-    SDL_CONST_LONG(INIT_VIDEO);
-    SDL_CONST_LONG(INIT_JOYSTICK);
-    SDL_CONST_LONG(INIT_HAPTIC);
-    SDL_CONST_LONG(INIT_GAMECONTROLLER);
-    SDL_CONST_LONG(INIT_EVENTS);
-    SDL_CONST_LONG(INIT_NOPARACHUTE);
-    SDL_CONST_LONG(INIT_EVERYTHING);
+	SDL_CONST_LONG(INIT_TIMER);
+	SDL_CONST_LONG(INIT_AUDIO);
+	SDL_CONST_LONG(INIT_VIDEO);
+	SDL_CONST_LONG(INIT_JOYSTICK);
+	SDL_CONST_LONG(INIT_HAPTIC);
+	SDL_CONST_LONG(INIT_GAMECONTROLLER);
+	SDL_CONST_LONG(INIT_EVENTS);
+	SDL_CONST_LONG(INIT_NOPARACHUTE);
+	SDL_CONST_LONG(INIT_EVERYTHING);
 
 	PHP_MINIT(SDL_Exceptions)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Renderer)(INIT_FUNC_ARGS_PASSTHRU);
@@ -131,11 +131,11 @@ PHP_RINIT_FUNCTION(sdl2)
 
 /* {{{ sdl2_functions[] */
 const zend_function_entry sdl2_functions[] = {
-    SDL_FE(init)
+	SDL_FE(init)
 	SDL_FE(initSubSystem)
-    SDL_FE(quitSubSystem)
-    SDL_FE(wasInit)
-    SDL_FE(quit)
+	SDL_FE(quitSubSystem)
+	SDL_FE(wasInit)
+	SDL_FE(quit)
 	PHP_FE_END
 };
 /* }}} */

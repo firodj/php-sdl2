@@ -41,11 +41,11 @@ PHP_METHOD(Window, __construct)
 	php_sdl_window_t *window = php_sdl_window_fetch(getThis());
 
 	zend_string *title;
-    zend_long x;
-    zend_long y;
-    zend_long w;
-    zend_long h;
-    zend_long flags = 0;
+	zend_long x;
+	zend_long y;
+	zend_long w;
+	zend_long h;
+	zend_long flags = 0;
 
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "Sllll|l", &title, &x, &y, &w, &h, &flags) != SUCCESS) {
 		return;
@@ -53,9 +53,9 @@ PHP_METHOD(Window, __construct)
 
 	window->w = SDL_CreateWindow(ZSTR_VAL(title), x, y, w, h, flags);
 
-    if (window->w == NULL) {
-        php_sdl_error(SDL_GetError());
-    }
+	if (window->w == NULL) {
+		php_sdl_error(SDL_GetError());
+	}
 }
 /* }}} */
 
@@ -79,34 +79,34 @@ PHP_MINIT_FUNCTION(SDL_Window)
 
 	php_sdl_window_handlers.offset = XtOffsetOf(php_sdl_window_t, std);
 
-    SDL_WINDOW_CONST(FULLSCREEN);
-    SDL_WINDOW_CONST(OPENGL);
-    SDL_WINDOW_CONST(SHOWN);
-    SDL_WINDOW_CONST(HIDDEN);
-    SDL_WINDOW_CONST(BORDERLESS);
-    SDL_WINDOW_CONST(RESIZABLE);
-    SDL_WINDOW_CONST(MINIMIZED);
-    SDL_WINDOW_CONST(MAXIMIZED);
-    SDL_WINDOW_CONST(INPUT_GRABBED);
-    SDL_WINDOW_CONST(INPUT_FOCUS);
-    SDL_WINDOW_CONST(MOUSE_FOCUS);
-    SDL_WINDOW_CONST(FULLSCREEN_DESKTOP);
-    SDL_WINDOW_CONST(FOREIGN);
-    SDL_WINDOW_CONST(ALLOW_HIGHDPI);
-    SDL_WINDOW_CONST(MOUSE_CAPTURE);
-    SDL_WINDOW_CONST(ALWAYS_ON_TOP);
-    SDL_WINDOW_CONST(SKIP_TASKBAR);
-    SDL_WINDOW_CONST(UTILITY);
-    SDL_WINDOW_CONST(TOOLTIP);
-    SDL_WINDOW_CONST(POPUP_MENU);
+	SDL_WINDOW_CONST(FULLSCREEN);
+	SDL_WINDOW_CONST(OPENGL);
+	SDL_WINDOW_CONST(SHOWN);
+	SDL_WINDOW_CONST(HIDDEN);
+	SDL_WINDOW_CONST(BORDERLESS);
+	SDL_WINDOW_CONST(RESIZABLE);
+	SDL_WINDOW_CONST(MINIMIZED);
+	SDL_WINDOW_CONST(MAXIMIZED);
+	SDL_WINDOW_CONST(INPUT_GRABBED);
+	SDL_WINDOW_CONST(INPUT_FOCUS);
+	SDL_WINDOW_CONST(MOUSE_FOCUS);
+	SDL_WINDOW_CONST(FULLSCREEN_DESKTOP);
+	SDL_WINDOW_CONST(FOREIGN);
+	SDL_WINDOW_CONST(ALLOW_HIGHDPI);
+	SDL_WINDOW_CONST(MOUSE_CAPTURE);
+	SDL_WINDOW_CONST(ALWAYS_ON_TOP);
+	SDL_WINDOW_CONST(SKIP_TASKBAR);
+	SDL_WINDOW_CONST(UTILITY);
+	SDL_WINDOW_CONST(TOOLTIP);
+	SDL_WINDOW_CONST(POPUP_MENU);
 
 	INIT_NS_CLASS_ENTRY(ce, SDL_NS, "WindowPos", NULL);
 
 	sdlWindowPos_ce = zend_register_internal_class_ex(&ce, NULL);
-    sdlWindowPos_ce->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL;
+	sdlWindowPos_ce->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL;
 
-    SDL_WINDOWPOS_CONST(UNDEFINED);
-    SDL_WINDOWPOS_CONST(CENTERED);
+	SDL_WINDOWPOS_CONST(UNDEFINED);
+	SDL_WINDOWPOS_CONST(CENTERED);
 
 	return SUCCESS;
 }

@@ -36,11 +36,11 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(Renderer, __construct) 
 {
 	php_sdl_renderer_t *renderer = php_sdl_renderer_fetch(getThis());
-    php_sdl_window_t *w;
+	php_sdl_window_t *w;
 
 	zval *window;
-    zend_long index;
-    zend_long flags;
+	zend_long index;
+	zend_long flags;
 
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "Oll", &window, sdlWindow_ce, &index, &flags) != SUCCESS) {
 		return;
@@ -48,11 +48,11 @@ PHP_METHOD(Renderer, __construct)
 
 	w = php_sdl_window_fetch(window);
 
-    renderer->r = SDL_CreateRenderer(w->w, index, flags);
+	renderer->r = SDL_CreateRenderer(w->w, index, flags);
 
-    if (renderer->r == NULL) {
-        php_sdl_error(SDL_GetError());
-    }
+	if (renderer->r == NULL) {
+		php_sdl_error(SDL_GetError());
+	}
 }
 /* }}} */
 
