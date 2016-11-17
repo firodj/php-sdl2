@@ -4,7 +4,7 @@
 extern zend_class_entry *sdlRenderer_ce;
 
 typedef struct _php_sdl_renderer_t {
-	SDL_Renderer *r;
+	SDL_Renderer *renderer;
 	zend_object std;
 } php_sdl_renderer_t;
 

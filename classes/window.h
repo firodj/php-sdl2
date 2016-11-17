@@ -5,7 +5,7 @@ extern zend_class_entry *sdlWindow_ce;
 extern zend_class_entry *sdlWindowPos_ce;
 
 typedef struct _php_sdl_window_t {
-	SDL_Window *w;
+	SDL_Window *window;
 	zend_object std;
 } php_sdl_window_t;
 
