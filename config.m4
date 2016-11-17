@@ -44,5 +44,7 @@ if test "$PHP_SDL2" != "no"; then
     classes/exceptions.c \
     classes/renderer.c \
     classes/window.c \
+    classes/windowflags.c \
+    classes/windowpos.c \
     , $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
 fi

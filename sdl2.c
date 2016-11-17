@@ -11,6 +11,8 @@
 #include <classes/exceptions.h>
 #include <classes/renderer.h>
 #include <classes/window.h>
+#include <classes/windowflags.h>
+#include <classes/windowpos.h>
 
 /* {{{ proto void SDL\init(int flags) */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_init_info, 0, 0, 1)
@@ -113,6 +115,8 @@ PHP_MINIT_FUNCTION(sdl2) /* {{{ */
 	PHP_MINIT(SDL_Exceptions)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Renderer)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Window)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(SDL_WindowFlags)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(SDL_WindowPos)(INIT_FUNC_ARGS_PASSTHRU);
 
 	return SUCCESS;
 } /* }}} */

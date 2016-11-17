@@ -13,7 +13,6 @@
 static zend_object_handlers php_sdl_window_handlers;
 
 zend_class_entry *sdlWindow_ce;
-zend_class_entry *sdlWindowPos_ce;
 
 /* {{{ php_sdl_window_create */
 static zend_object* php_sdl_window_create(zend_class_entry *ce)
@@ -100,37 +99,6 @@ PHP_MINIT_FUNCTION(SDL_Window) /* {{{ */
 	php_sdl_window_handlers.clone_obj = NULL;
 
 	php_sdl_window_handlers.offset = XtOffsetOf(php_sdl_window_t, std);
-
-	SDL_WINDOW_CONST(FULLSCREEN);
-	SDL_WINDOW_CONST(OPENGL);
-	SDL_WINDOW_CONST(SHOWN);
-	SDL_WINDOW_CONST(HIDDEN);
-	SDL_WINDOW_CONST(BORDERLESS);
-	SDL_WINDOW_CONST(RESIZABLE);
-	SDL_WINDOW_CONST(MINIMIZED);
-	SDL_WINDOW_CONST(MAXIMIZED);
-	SDL_WINDOW_CONST(INPUT_GRABBED);
-	SDL_WINDOW_CONST(INPUT_FOCUS);
-	SDL_WINDOW_CONST(MOUSE_FOCUS);
-	SDL_WINDOW_CONST(FULLSCREEN_DESKTOP);
-	SDL_WINDOW_CONST(FOREIGN);
-	SDL_WINDOW_CONST(ALLOW_HIGHDPI);
-	SDL_WINDOW_CONST(MOUSE_CAPTURE);
-#if SDL_VERSION_ATLEAST(2,0,5)
-	SDL_WINDOW_CONST(ALWAYS_ON_TOP);
-	SDL_WINDOW_CONST(SKIP_TASKBAR);
-	SDL_WINDOW_CONST(UTILITY);
-	SDL_WINDOW_CONST(TOOLTIP);
-	SDL_WINDOW_CONST(POPUP_MENU);
-#endif
-
-	INIT_NS_CLASS_ENTRY(ce, SDL_NS, "WindowPos", NULL);
-
-	sdlWindowPos_ce = zend_register_internal_class_ex(&ce, NULL);
-	sdlWindowPos_ce->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL;
-
-	SDL_WINDOWPOS_CONST(UNDEFINED);
-	SDL_WINDOWPOS_CONST(CENTERED);
 
 	return SUCCESS;
 } /* }}} */
