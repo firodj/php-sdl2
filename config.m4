@@ -43,6 +43,7 @@ if test "$PHP_SDL2" != "no"; then
     sdl2.c \
     classes/exceptions.c \
     classes/renderer.c \
+    classes/rendererflags.c \
     classes/window.c \
     classes/windowflags.c \
     classes/windowpos.c \
