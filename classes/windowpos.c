@@ -2,10 +2,14 @@
 #define HAVE_PHP_SDL_WINDOWFLAGS
 
 #include "php.h"
+#ifdef _WIN32
+#include <SDL.h>
+#else
 #include <SDL2/SDL.h>
+#endif
 
-#include <classes/common.h>
-#include <classes/windowpos.h>
+#include "./common.h"
+#include "./windowpos.h"
 
 zend_class_entry *sdlWindowPos_ce;
 

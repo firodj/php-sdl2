@@ -5,14 +5,18 @@
 #include "php.h"
 #include "php_sdl2.h"
 
+#ifdef _WIN32
+#include <SDL.h>
+#else
 #include <SDL2/SDL.h>
+#endif
 
-#include <classes/common.h>
-#include <classes/exceptions.h>
-#include <classes/renderer.h>
-#include <classes/window.h>
-#include <classes/windowflags.h>
-#include <classes/windowpos.h>
+#include "classes/common.h"
+#include "classes/exceptions.h"
+#include "classes/renderer.h"
+#include "classes/window.h"
+#include "classes/windowflags.h"
+#include "classes/windowpos.h"
 
 /* {{{ proto void SDL\init(int flags) */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_init_info, 0, 0, 1)

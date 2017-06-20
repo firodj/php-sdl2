@@ -1,0 +1,24 @@
+// $Id$
+// vim:ft=javascript
+//
+// https://github.com/php/php-src/blob/master/win32/build/confutils.js
+
+ARG_ENABLE('sdl2', 'SDL2 (Simple DirectMedia Layer) Support', 'no');
+
+if (PHP_SDL2 != 'no')
+{
+	if (!CHECK_LIB("SDL2.lib", 'sdl2')) {
+		WARNING("SDL2 not enabled; SDL2.lib library not found in LIB path");
+	} else if (!CHECK_HEADER_ADD_INCLUDE("SDL.h", "CFLAGS_SDL2", null, true)) {
+		WARNING("SDL2 not enabled; SDL.h header not found in INCLUDE path");
+	} else {
+		EXTENSION('sdl2', 'sdl2.c ' +
+      'classes\\exceptions.c ' +
+      'classes\\renderer.c ' +
+      'classes\\rendererflags.c ' +
+      'classes\\window.c ' +
+      'classes\\windowflags.c ' +
+      'classes\\windowpos.c', true);
+		ADD_FLAG('CFLAGS_SDL2', '/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1');
+	}
+}

@@ -4,12 +4,16 @@
 #include "php.h"
 #include "zend_interfaces.h"
 
+#ifdef _WIN32
+#include <SDL.h>
+#else
 #include <SDL2/SDL.h>
+#endif
 
-#include <classes/common.h>
-#include <classes/exceptions.h>
-#include <classes/renderer.h>
-#include <classes/window.h>
+#include "./common.h"
+#include "./exceptions.h"
+#include "./renderer.h"
+#include "./window.h"
 
 static zend_object_handlers php_sdl_renderer_handlers;
 

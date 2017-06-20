@@ -4,7 +4,7 @@
 #include "php.h"
 #include "ext/spl/spl_exceptions.h"
 
-#include <classes/common.h>
+#include "./common.h"
 
 zend_class_entry *sdlError_ce;
 

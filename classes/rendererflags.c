@@ -2,10 +2,14 @@
 #define HAVE_PHP_SDL_RENDERERFLAGS
 
 #include "php.h"
+#ifdef _WIN32
+#include <SDL.h>
+#else
 #include <SDL2/SDL.h>
+#endif
 
-#include <classes/common.h>
-#include <classes/rendererflags.h>
+#include "./common.h"
+#include "./rendererflags.h"
 
 zend_class_entry *sdlRendererFlags_ce;
 
