@@ -13,7 +13,10 @@
 
 #include "classes/common.h"
 #include "classes/exceptions.h"
+#include "classes/pixelformat.h"
 #include "classes/renderer.h"
+#include "classes/rendererflags.h"
+#include "classes/surface.h"
 #include "classes/window.h"
 #include "classes/windowflags.h"
 #include "classes/windowpos.h"
@@ -117,8 +120,10 @@ PHP_MINIT_FUNCTION(sdl2) /* {{{ */
 	SDL_CONST_LONG(COMPILEDVERSION);
 
 	PHP_MINIT(SDL_Exceptions)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(SDL_PixelFormat)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Renderer)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_RendererFlags)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(SDL_Surface)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Window)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_WindowFlags)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_WindowPos)(INIT_FUNC_ARGS_PASSTHRU);

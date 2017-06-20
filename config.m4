@@ -42,8 +42,10 @@ if test "$PHP_SDL2" != "no"; then
   PHP_NEW_EXTENSION(sdl2, \
     sdl2.c \
     classes/exceptions.c \
+    classes/pixelformat.c \
     classes/renderer.c \
     classes/rendererflags.c \
+    classes/surface.c \
     classes/window.c \
     classes/windowflags.c \
     classes/windowpos.c \

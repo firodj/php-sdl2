@@ -58,7 +58,7 @@ ZEND_BEGIN_ARG_INFO_EX(php_sdl_window___construct_info, 0, 0, 5)
 	ZEND_ARG_TYPE_INFO(0, flags, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
-PHP_METHOD(Window, __construct) 
+PHP_METHOD(Window, __construct)
 {
 	php_sdl_window_t *wt = php_sdl_window_fetch(getThis());
 
