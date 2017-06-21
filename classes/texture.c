@@ -108,7 +108,7 @@ PHP_METHOD(Texture, createFromSurface)
 	
 	if (tt->texture == NULL) {
 		zval_ptr_dtor(return_value);
-		RETURN_FALSE;
+		php_sdl_error(SDL_GetError());
 	}
 }
 /* }}} */

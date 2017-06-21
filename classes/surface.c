@@ -74,9 +74,37 @@ PHP_METHOD(Surface, __construct)
 }
 /* }}} */
 
+/* {{{ proto Surface Surface::loadBMP(string filename) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_surface_loadBMP_info, 0, 0, 1)
+	ZEND_ARG_TYPE_INFO(0, file, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Surface, loadBMP)
+{
+	php_sdl_surface_t *st;
+
+	zend_string *filename;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "S", &filename) != SUCCESS) {
+		return;
+	}
+
+	object_init_ex(return_value, sdlSurface_ce);
+	st = php_sdl_surface_fetch(return_value);
+
+	st->surface = SDL_LoadBMP(ZSTR_VAL(filename));
+
+	if (st->surface == NULL) {
+		zval_ptr_dtor(return_value);
+		php_sdl_error(SDL_GetError());
+	}
+}
+/* }}} */
+
 /* {{{ php_sdl_surface_methods */
 const zend_function_entry php_sdl_surface_methods[] = {
 	PHP_ME(Surface, __construct, php_sdl_surface___construct_info, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
+	PHP_ME(Surface, loadBMP, php_sdl_surface_loadBMP_info, ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 
