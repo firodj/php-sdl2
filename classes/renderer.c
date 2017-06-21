@@ -78,9 +78,65 @@ PHP_METHOD(Renderer, __construct)
 	}
 } /* }}} */
 
+/* {{{ proto Renderer::clear() */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_renderer_clear_info, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Renderer, clear)
+{
+	php_sdl_renderer_t *rt = php_sdl_renderer_fetch(getThis());
+
+	if (SDL_RenderClear(rt->renderer) != 0) {
+		php_sdl_error(SDL_GetError());
+	}
+}
+/* }}} */
+
+/* {{{ proto Renderer::present() */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_renderer_present_info, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Renderer, present)
+{
+	php_sdl_renderer_t *rt = php_sdl_renderer_fetch(getThis());
+
+	SDL_RenderPresent(rt->renderer);
+}
+/* }}} */
+
+/* {{{ proto Renderer::setDrawColor(int r, int g, int b[, int a = 0xff]) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_renderer_setDrawColor_info, 0, 0, 0)
+	ZEND_ARG_TYPE_INFO(0, r, IS_LONG, 0)
+	ZEND_ARG_TYPE_INFO(0, g, IS_LONG, 0)
+	ZEND_ARG_TYPE_INFO(0, b, IS_LONG, 0)
+	ZEND_ARG_TYPE_INFO(0, a, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Renderer, setDrawColor)
+{
+	php_sdl_renderer_t *rt = php_sdl_renderer_fetch(getThis());
+
+	zend_long r;
+	zend_long g;
+	zend_long b;
+	zend_long a = SDL_ALPHA_OPAQUE;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "lll|l", &r, &g, &b, &a) != SUCCESS) {
+		return;
+	}
+
+	if (SDL_SetRenderDrawColor(rt->renderer, r, g, b, a) != 0) {
+		php_sdl_error(SDL_GetError());
+	}
+}
+
+/* }}} */
 /* {{{ php_sdl_renderer_methods[] */
 const zend_function_entry php_sdl_renderer_methods[] = {
 	PHP_ME(Renderer, __construct, php_sdl_renderer___construct_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Renderer, clear, php_sdl_renderer_clear_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Renderer, present, php_sdl_renderer_present_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Renderer, setDrawColor, php_sdl_renderer_setDrawColor_info, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 
