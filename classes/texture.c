@@ -115,7 +115,7 @@ PHP_METHOD(Texture, createFromSurface)
 
 /* {{{ php_sdl_texture_methods */
 const zend_function_entry php_sdl_texture_methods[] = {
-	PHP_ME(Texture, __construct, php_sdl_texture___construct_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Texture, __construct, php_sdl_texture___construct_info, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
 	PHP_ME(Texture, createFromSurface, php_sdl_texture_createFromSurface_info, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_FE_END
 }; /* }}} */

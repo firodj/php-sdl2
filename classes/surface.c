@@ -76,7 +76,7 @@ PHP_METHOD(Surface, __construct)
 
 /* {{{ php_sdl_surface_methods */
 const zend_function_entry php_sdl_surface_methods[] = {
-	PHP_ME(Surface, __construct, php_sdl_surface___construct_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Surface, __construct, php_sdl_surface___construct_info, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 

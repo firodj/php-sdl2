@@ -130,7 +130,7 @@ PHP_METHOD(Renderer, setDrawColor)
 	if (SDL_SetRenderDrawColor(rt->renderer, r, g, b, a) != 0) {
 		php_sdl_error(SDL_GetError());
 	}
-}
+} /* }}} */
 
 /* {{{ proto Renderer::copy(Texture texture, Rect srcrect, Rect dstrect) */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_renderer_copy_info, 0, 0, 1)
@@ -171,7 +171,7 @@ PHP_METHOD(Renderer, copy)
 
 /* {{{ php_sdl_renderer_methods[] */
 const zend_function_entry php_sdl_renderer_methods[] = {
-	PHP_ME(Renderer, __construct, php_sdl_renderer___construct_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Renderer, __construct, php_sdl_renderer___construct_info, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
 	PHP_ME(Renderer, clear, php_sdl_renderer_clear_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Renderer, present, php_sdl_renderer_present_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Renderer, setDrawColor, php_sdl_renderer_setDrawColor_info, ZEND_ACC_PUBLIC)

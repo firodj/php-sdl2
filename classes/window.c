@@ -82,7 +82,7 @@ PHP_METHOD(Window, __construct)
 
 /* {{{ php_sdl_window_methods */
 const zend_function_entry php_sdl_window_methods[] = {
-	PHP_ME(Window, __construct, php_sdl_window___construct_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Window, __construct, php_sdl_window___construct_info, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 
