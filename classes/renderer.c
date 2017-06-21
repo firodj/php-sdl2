@@ -13,7 +13,9 @@
 #include "./common.h"
 #include "./exceptions.h"
 #include "./renderer.h"
+#include "./texture.h"
 #include "./window.h"
+#include "./rect.h"
 
 static zend_object_handlers php_sdl_renderer_handlers;
 
@@ -130,13 +132,50 @@ PHP_METHOD(Renderer, setDrawColor)
 	}
 }
 
+/* {{{ proto Renderer::copy(Texture texture, Rect srcrect, Rect dstrect) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_renderer_copy_info, 0, 0, 1)
+	ZEND_ARG_OBJ_INFO(0, texture, SDL\\Texture, 0)
+	ZEND_ARG_OBJ_INFO(0, srcrect, SDL\\Rect, 1)
+	ZEND_ARG_OBJ_INFO(0, dstrect, SDL\\Rect, 1)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Renderer, copy)
+{
+	php_sdl_renderer_t *rt = php_sdl_renderer_fetch(getThis());
+	php_sdl_texture_t *tt;
+	SDL_Rect srcR;
+	SDL_Rect dstR;
+
+	zval *texture;
+	zval *srcrect = NULL;
+	zval *dstrect = NULL;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O|OO", &texture, sdlTexture_ce, &srcrect, sdlRect_ce, &dstrect, sdlRect_ce) != SUCCESS) {
+		return;
+	}
+
+	if (srcrect) {
+		zval_to_sdl_rect(srcrect, &srcR TSRMLS_CC);
+	}
+	if (dstrect) {
+		zval_to_sdl_rect(dstrect, &dstR TSRMLS_CC);
+	}
+
+	tt = php_sdl_texture_fetch(texture);
+
+	if (SDL_RenderCopy(rt->renderer, tt->texture, srcrect ? &srcR : NULL, dstrect ? &dstR : NULL) != 0) {
+		php_sdl_error(SDL_GetError());
+	}
+}
 /* }}} */
+
 /* {{{ php_sdl_renderer_methods[] */
 const zend_function_entry php_sdl_renderer_methods[] = {
 	PHP_ME(Renderer, __construct, php_sdl_renderer___construct_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Renderer, clear, php_sdl_renderer_clear_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Renderer, present, php_sdl_renderer_present_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Renderer, setDrawColor, php_sdl_renderer_setDrawColor_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Renderer, copy, php_sdl_renderer_copy_info, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 

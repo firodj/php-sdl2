@@ -49,7 +49,7 @@ static void php_sdl_texture_free_storage(zend_object *object)
 
 /* {{{ proto Texture Texture::__construct(Renderer renderer, int format, int access, int w, int h) */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_texture___construct_info, 0, 0, 5)
-	ZEND_ARG_OBJ_INFO(0, renderer, ZEND_NS_NAME(SDL_NS, Renderer), 0)
+	ZEND_ARG_OBJ_INFO(0, renderer, SDL\\Renderer, 0)
 	ZEND_ARG_TYPE_INFO(0, format, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO(0, access, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO(0, w, IS_LONG, 0)
@@ -82,8 +82,8 @@ PHP_METHOD(Texture, __construct)
 
 /* {{{ proto Texture Texture::createFromSurface(renderer, surface) */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_texture_createFromSurface_info, 0, 0, 2)
-	ZEND_ARG_OBJ_INFO(0, renderer, ZEND_NS_NAME(SDL_NS, Renderer), 0)
-	ZEND_ARG_OBJ_INFO(0, surface, ZEND_NS_NAME(SDL_NS, Surface), 0)
+	ZEND_ARG_OBJ_INFO(0, renderer, SDL\\Renderer, 0)
+	ZEND_ARG_OBJ_INFO(0, surface, SDL\\Surface, 0)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(Texture, createFromSurface)
@@ -125,7 +125,7 @@ PHP_MINIT_FUNCTION(SDL_Texture) /* {{{ */
 {
 	zend_class_entry ce;
 
-	INIT_NS_CLASS_ENTRY(ce, SDL_NS, "Texture", NULL);
+	INIT_NS_CLASS_ENTRY(ce, SDL_NS, "Texture", php_sdl_texture_methods);
 	sdlTexture_ce = zend_register_internal_class_ex(&ce, NULL);
 
 	sdlTexture_ce->ce_flags |= ZEND_ACC_FINAL;

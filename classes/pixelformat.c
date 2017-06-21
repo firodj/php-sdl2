@@ -18,6 +18,7 @@ PHP_MINIT_FUNCTION(SDL_PixelFormat) /* {{{ */
 	sdlPixelFormat_ce = zend_register_internal_class_ex(&ce, NULL);
 	sdlPixelFormat_ce->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL;
 
+	SDL_PIXELFORMAT_CONST(ARGB8888);
 	SDL_PIXELFORMAT_CONST(RGBA32);
 
 	return SUCCESS;
