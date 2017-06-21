@@ -17,6 +17,8 @@
 #include "classes/renderer.h"
 #include "classes/rendererflags.h"
 #include "classes/surface.h"
+#include "classes/texture.h"
+#include "classes/textureaccess.h"
 #include "classes/window.h"
 #include "classes/windowflags.h"
 #include "classes/windowpos.h"
@@ -124,6 +126,8 @@ PHP_MINIT_FUNCTION(sdl2) /* {{{ */
 	PHP_MINIT(SDL_Renderer)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_RendererFlags)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Surface)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(SDL_Texture)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(SDL_TextureAccess)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Window)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_WindowFlags)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_WindowPos)(INIT_FUNC_ARGS_PASSTHRU);

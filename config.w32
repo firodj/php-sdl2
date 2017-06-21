@@ -14,8 +14,12 @@ if (PHP_SDL2 != 'no')
 	} else {
 		EXTENSION('sdl2', 'sdl2.c ' +
       'classes\\exceptions.c ' +
+      'classes\\pixelformat.c ' +
       'classes\\renderer.c ' +
       'classes\\rendererflags.c ' +
+      'classes\\surface.c ' +
+      'classes\\texture.c ' +
+      'classes\\textureaccess.c ' +
       'classes\\window.c ' +
       'classes\\windowflags.c ' +
       'classes\\windowpos.c', true);

@@ -46,6 +46,8 @@ if test "$PHP_SDL2" != "no"; then
     classes/renderer.c \
     classes/rendererflags.c \
     classes/surface.c \
+    classes/texture.c \
+    classes/textureaccess.c \
     classes/window.c \
     classes/windowflags.c \
     classes/windowpos.c \
