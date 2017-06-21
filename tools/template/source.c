@@ -77,7 +77,7 @@ PHP_MINIT_FUNCTION(SDL_<?= $className ?>) /* {{{ */
 {
 	zend_class_entry ce;
 
-	INIT_NS_CLASS_ENTRY(ce, SDL_NS, "<?= $className ?>", NULL);
+	INIT_NS_CLASS_ENTRY(ce, SDL_NS, "<?= $className ?>", php_sdl_<?= strtolower($className) ?>_methods);
 	sdl<?= $className ?>_ce = zend_register_internal_class_ex(&ce, NULL);
 	// TODO: For Const
 	sdl<?= $className ?>_ce->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL;
