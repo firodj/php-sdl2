@@ -69,7 +69,7 @@ PHP_METHOD(<?= $className ?>, __construct)
 
 /* {{{ php_sdl_<?= strtolower($className) ?>_methods */
 const zend_function_entry php_sdl_<?= strtolower($className) ?>_methods[] = {
-	PHP_ME(<?= $className ?>, __construct, php_sdl_<?= strtolower($className) ?>___construct_info, ZEND_ACC_PUBLIC)
+	PHP_ME(<?= $className ?>, __construct, php_sdl_<?= strtolower($className) ?>___construct_info, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 
