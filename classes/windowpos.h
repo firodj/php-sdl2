@@ -1,5 +1,5 @@
-#ifndef HAVE_PHP_SDL_WINDOWFLAGS_H
-#define HAVE_PHP_SDL_WINDOWFLAGS_H
+#ifndef HAVE_PHP_SDL_WINDOWPOS_H
+#define HAVE_PHP_SDL_WINDOWPOS_H
 
 extern zend_class_entry *sdlWindowPos_ce;
 
