@@ -5,9 +5,9 @@
 #include "zend_interfaces.h"
 
 #ifdef _WIN32
-#include <SDL.h>
+	#include <SDL.h>
 #else
-#include <SDL2/SDL.h>
+	#include <SDL2/SDL.h>
 #endif
 
 #include "./common.h"

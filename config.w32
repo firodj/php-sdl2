@@ -19,6 +19,7 @@ if (PHP_SDL2 != 'no')
       'classes\\renderer.c ' +
       'classes\\rendererflags.c ' +
       'classes\\surface.c ' +
+      'classes\\timer.c ' +
       'classes\\texture.c ' +
       'classes\\textureaccess.c ' +
       'classes\\window.c ' +

@@ -6,9 +6,9 @@
 #include "php_sdl2.h"
 
 #ifdef _WIN32
-#include <SDL.h>
+	#include <SDL.h>
 #else
-#include <SDL2/SDL.h>
+	#include <SDL2/SDL.h>
 #endif
 
 #include "classes/common.h"
@@ -20,6 +20,7 @@
 #include "classes/surface.h"
 #include "classes/texture.h"
 #include "classes/textureaccess.h"
+#include "classes/timer.h"
 #include "classes/window.h"
 #include "classes/windowflags.h"
 #include "classes/windowpos.h"
@@ -130,6 +131,7 @@ PHP_MINIT_FUNCTION(sdl2) /* {{{ */
 	PHP_MINIT(SDL_Surface)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Texture)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_TextureAccess)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(SDL_Timer)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Window)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_WindowFlags)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_WindowPos)(INIT_FUNC_ARGS_PASSTHRU);
