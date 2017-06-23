@@ -1,4 +1,6 @@
 #include "php.h"
+#include "zend_interfaces.h"
+
 #ifdef _WIN32
 	#include <SDL.h>
 #else
