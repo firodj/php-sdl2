@@ -10,6 +10,7 @@
 #include "./common.h"
 #include "./exceptions.h"
 #include "./event.h"
+#include "./timer.h"
 
 static zend_object_handlers php_sdl_event_handlers;
 
@@ -95,6 +96,12 @@ PHP_METHOD(Event, poll)
 		object_init_ex(return_value, sdlEvent_ce);
 		et = php_sdl_event_fetch(return_value);
 		et->event = event;
+
+		if (event.type == SDL_USEREVENT && event.user.code == SDL_TIMER_CALLBACK) {
+			Uint32 ticks = (Uint32)event.user.data1;
+			php_sdl_timer_t *tmt = (php_sdl_timer_t*)event.user.data2;
+			php_sdl_timer_call_run(ticks, tmt);
+		}
 	}
 } /* }}} */
 

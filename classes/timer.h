@@ -20,7 +20,9 @@ extern struct _php_sdl_globals_t php_sdl_globals;
 #define php_sdl_timer_fetch(z) php_sdl_timer_from_obj(Z_OBJ_P(z))
 #define SDL_TIMER_CONST(name) zend_declare_class_constant_long(sdlTimer_ce, ZEND_STRL(#name), SDL_TIMER_##name);
 #define SDL_G(v) php_sdl_globals.v
+#define SDL_TIMER_CALLBACK 1001
 
+int php_sdl_timer_call_run(Uint32, php_sdl_timer_t *);
 PHP_MINIT_FUNCTION(SDL_Timer);
 
 #endif

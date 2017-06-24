@@ -30,6 +30,7 @@ static zend_object* php_sdl_timer_create(zend_class_entry *ce)
 	return &tmt->std;
 } /* }}} */
 
+/* {{{ _php_sdl_timer_stop */
 static int _php_sdl_timer_stop(php_sdl_timer_t *tmt)
 {
 	int ret = -1;
@@ -38,7 +39,7 @@ static int _php_sdl_timer_stop(php_sdl_timer_t *tmt)
 		tmt->id = 0;
 	}
 	return ret;
-}
+} /* }}} */
 
 /* {{{ php_sdl_timer_dtor_storage */
 static void php_sdl_timer_dtor_storage(zend_object *object)
@@ -60,8 +61,21 @@ static void php_sdl_timer_free_storage(zend_object *object)
 Uint32 _php_sdl_timer_callback(Uint32 interval, void *param)
 {
 	int retval = interval;
-	php_sdl_timer_t *tmt = (php_sdl_timer_t*)param;
-	fprintf(stderr, "!");
+	Uint32 ticks = SDL_GetTicks();
+
+	SDL_Event event;
+	SDL_UserEvent userevent;
+
+	userevent.type = SDL_USEREVENT;
+	userevent.code = SDL_TIMER_CALLBACK;
+	userevent.data1 = ticks;
+	userevent.data2 = param;
+
+	event.type = SDL_USEREVENT;
+	event.user = userevent;
+
+	SDL_PushEvent(&event);
+
 	return retval;
 }
 /* }}} */
@@ -119,10 +133,54 @@ PHP_METHOD(Timer, getTicks)
 /* }}} */
 
 /* {{{ proto Timer::run() */
-ZEND_BEGIN_ARG_INFO_EX(php_sdl_timer_run_info, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_timer_run_info, 0, 0, 1)
+	ZEND_ARG_TYPE_INFO(0, ticks, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(Timer, run) {} /* }}} */
+
+/* {{{ php_sdl_timer_call_run */
+int php_sdl_timer_call_run(Uint32 ticks, php_sdl_timer_t *tmt)
+{
+	int retval = 0;
+	zval zresult, zarg0;
+	zend_function *run;
+	zend_fcall_info fci = empty_fcall_info;
+	zend_fcall_info_cache fcc = empty_fcall_info_cache;
+
+	ZVAL_UNDEF(&zresult);
+	ZVAL_LONG(&zarg0, (zend_long)ticks);
+	
+	zend_try {
+		if ((run = zend_hash_find_ptr(&tmt->std.ce->function_table, SDL_G(strings).run))) {							
+			if (run->type == ZEND_USER_FUNCTION) {
+				fci.size = sizeof(zend_fcall_info);
+			    fci.retval = &zresult;
+				fci.object = &tmt->std;
+				fci.no_separation = 1;
+				fci.param_count = 1;
+				fci.params = &zarg0;
+				fcc.initialized = 1;
+				fcc.object = &tmt->std;
+				fcc.calling_scope = tmt->std.ce;
+				fcc.called_scope = tmt->std.ce;
+				fcc.function_handler = run;
+
+				zend_call_function(&fci, &fcc);
+
+				convert_to_long(&zresult);
+				retval = zval_get_long(&zresult);
+				zval_ptr_dtor(&zresult);
+				zval_ptr_dtor(&zarg0);
+			}
+		}
+	} zend_catch {
+		php_error_docref(NULL, E_WARNING, "Fail to run callback");
+		return -1;
+	} zend_end_try();
+
+	return retval;
+} /* }}} */
 
 /* {{{ proto Timer::start(int interval) */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_timer_start_info, 0, 0, 1)
