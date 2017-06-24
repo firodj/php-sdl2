@@ -46,6 +46,22 @@ static void php_sdl_event_free_storage(zend_object *object)
 	efree(et);
 } /* }}} */
 
+/* {{{ php_sdl_event_read_property */
+zval* php_sdl_event_read_property(zval *object, zval *member, int type, void **cache_slot, zval *rv)
+{
+	zval *retval;
+
+	php_sdl_event_t *et = php_sdl_event_fetch(object);
+
+	retval = rv;
+
+	if (strcmp(Z_STRVAL_P(member), "type") == 0) {
+		ZVAL_LONG(retval, et->event.type);
+	}
+
+	return retval;
+} /* }}} */
+
 /* {{{ proto Event Event::__construct() */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_event___construct_info, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -56,26 +72,6 @@ PHP_METHOD(Event, __construct)
 
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "") != SUCCESS) {
 		return;
-	}
-} /* }}} */
-
-/* {{{ proto Event Event::__get(string key) */
-ZEND_BEGIN_ARG_INFO_EX(php_sdl_event___get_info, 0, 0, 1)
-	ZEND_ARG_TYPE_INFO(0, key, IS_STRING, 0)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(Event, __get)
-{
-	php_sdl_event_t *et = php_sdl_event_fetch(getThis());
-
-	zend_string *key;
-
-	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "S", &key) != SUCCESS) {
-		return;
-	}
-
-	if (strcmp(ZSTR_VAL(key), "type") == 0) {
-		RETURN_LONG(et->event.type);
 	}
 } /* }}} */
 
@@ -102,13 +98,15 @@ PHP_METHOD(Event, poll)
 			php_sdl_timer_t *tmt = (php_sdl_timer_t*)event.user.data2;
 			php_sdl_timer_call_run(ticks, tmt);
 		}
+		return;
 	}
+
+	RETURN_NULL();
 } /* }}} */
 
 /* {{{ php_sdl_event_methods */
 const zend_function_entry php_sdl_event_methods[] = {
 	PHP_ME(Event, __construct, php_sdl_event___construct_info, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
-	PHP_ME(Event, __get, php_sdl_event___get_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Event, poll, php_sdl_event_poll_info, ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
@@ -128,6 +126,7 @@ PHP_MINIT_FUNCTION(SDL_Event) /* {{{ */
 	php_sdl_event_handlers.free_obj = php_sdl_event_free_storage;
 	php_sdl_event_handlers.dtor_obj = php_sdl_event_dtor_storage;
 	php_sdl_event_handlers.clone_obj = NULL;
+	php_sdl_event_handlers.read_property = php_sdl_event_read_property;
 
 	php_sdl_event_handlers.offset = XtOffsetOf(php_sdl_event_t, std);
 
