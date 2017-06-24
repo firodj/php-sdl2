@@ -8,11 +8,12 @@ extern "C" {
 extern zend_class_entry *sdlRect_ce;
 
 typedef struct _php_sdl_rect_t {
+	SDL_Rect rect;
 	zend_object std;
 } php_sdl_rect_t;
 
-zend_bool sdl_rect_to_zval(SDL_Rect *rect, zval *value TSRMLS_DC);
-zend_bool zval_to_sdl_rect(zval *value, SDL_Rect *rect);
+#define php_sdl_rect_from_obj(o) ((php_sdl_rect_t*) ((char*) o - XtOffsetOf(php_sdl_rect_t, std)))
+#define php_sdl_rect_fetch(z) php_sdl_rect_from_obj(Z_OBJ_P(z))
 
 PHP_MINIT_FUNCTION(SDL_Rect);
 

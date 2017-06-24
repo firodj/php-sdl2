@@ -143,8 +143,8 @@ PHP_METHOD(Renderer, copy)
 {
 	php_sdl_renderer_t *rt = php_sdl_renderer_fetch(getThis());
 	php_sdl_texture_t *tt;
-	SDL_Rect srcR;
-	SDL_Rect dstR;
+	SDL_Rect *srcR = NULL;
+	SDL_Rect *dstR = NULL;
 
 	zval *texture;
 	zval *srcrect = NULL;
@@ -155,15 +155,15 @@ PHP_METHOD(Renderer, copy)
 	}
 
 	if (srcrect) {
-		zval_to_sdl_rect(srcrect, &srcR TSRMLS_CC);
+		srcR = &php_sdl_rect_fetch(srcrect)->rect;
 	}
 	if (dstrect) {
-		zval_to_sdl_rect(dstrect, &dstR TSRMLS_CC);
+		dstR = &php_sdl_rect_fetch(dstrect)->rect;
 	}
 
 	tt = php_sdl_texture_fetch(texture);
 
-	if (SDL_RenderCopy(rt->renderer, tt->texture, srcrect ? &srcR : NULL, dstrect ? &dstR : NULL) != 0) {
+	if (SDL_RenderCopy(rt->renderer, tt->texture, srcR, dstR) != 0) {
 		php_sdl_error(SDL_GetError());
 	}
 }
