@@ -25,6 +25,7 @@ if (PHP_SDL2 != 'no')
       'classes\\texture.c ' +
       'classes\\textureaccess.c ' +
       'classes\\window.c ' +
+      'classes\\windowevent.c ' +
       'classes\\windowflags.c ' +
       'classes\\windowpos.c', true);
 		ADD_FLAG('CFLAGS_SDL2', '/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1');

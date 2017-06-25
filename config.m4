@@ -53,6 +53,7 @@ if test "$PHP_SDL2" != "no"; then
     classes/textureaccess.c \
     classes/timer.c \
     classes/window.c \
+    classes/windowevent.c \
     classes/windowflags.c \
     classes/windowpos.c \
     , $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)

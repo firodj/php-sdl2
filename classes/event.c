@@ -77,6 +77,17 @@ zval* php_sdl_event_read_property(zval *object, zval *member, int type, void **c
 					ZVAL_LONG(retval, et->event.key.keysym.mod);
 				}
 				break;
+			case SDL_WINDOWEVENT:
+				if (strcmp(Z_STRVAL_P(member), "windowID") == 0) {
+					ZVAL_LONG(retval, et->event.window.windowID);
+				} else if (strcmp(Z_STRVAL_P(member), "event") == 0) {
+					ZVAL_LONG(retval, et->event.window.event);
+				} else if (strcmp(Z_STRVAL_P(member), "data1") == 0) {
+					ZVAL_LONG(retval, et->event.window.data1);
+				} else if (strcmp(Z_STRVAL_P(member), "data2") == 0) {
+					ZVAL_LONG(retval, et->event.window.data2);
+				}
+				break;
 			case SDL_MOUSEMOTION:
 				if (strcmp(Z_STRVAL_P(member), "windowID") == 0) {
 					ZVAL_LONG(retval, et->event.motion.windowID);
@@ -163,6 +174,44 @@ PHP_METHOD(Event, __construct)
 	}
 } /* }}} */
 
+/* {{{ proto void Event::setState(int type, bool enable) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_event_setState_info, 0, 0, 2)
+	ZEND_ARG_TYPE_INFO(0, type, IS_LONG, 0)
+	ZEND_ARG_INFO(0, enable)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Event, setState)
+{
+	php_sdl_event_t *et = php_sdl_event_fetch(getThis());
+
+	zend_long type;
+	zend_bool enable;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "lb", &type, &enable) != SUCCESS) {
+		return;
+	}
+
+	SDL_EventState(type, enable);
+} /* }}} */
+
+/* {{{ proto bool Event::getState(int type) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_event_getState_info, 0, 0, 1)
+	ZEND_ARG_TYPE_INFO(0, type, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Event, getState)
+{
+	php_sdl_event_t *et = php_sdl_event_fetch(getThis());
+
+	zend_long type;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "l", &type) != SUCCESS) {
+		return;
+	}
+
+	RETURN_BOOL(SDL_EventState(type, SDL_QUERY));
+} /* }}} */
+
 /* {{{ proto Event Event::poll() */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_event_poll_info, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -178,6 +227,7 @@ PHP_METHOD(Event, poll)
 
 	for(;;) {
 		if (SDL_PollEvent(&event)) {
+			fprintf(stderr, "_");
 			if (event.type == SDL_USEREVENT && event.user.code == SDL_TIMER_CALLBACK) {
 				Uint32 interval = (Uint32)event.user.data1;
 				php_sdl_timer_t *tmt = (php_sdl_timer_t*)event.user.data2;
@@ -198,6 +248,8 @@ PHP_METHOD(Event, poll)
 const zend_function_entry php_sdl_event_methods[] = {
 	PHP_ME(Event, __construct, php_sdl_event___construct_info, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
 	PHP_ME(Event, poll, php_sdl_event_poll_info, ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
+	PHP_ME(Event, setState, php_sdl_event_setState_info, ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
+	PHP_ME(Event, getState, php_sdl_event_getState_info, ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 
