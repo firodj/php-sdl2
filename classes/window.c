@@ -13,6 +13,7 @@
 #include "./common.h"
 #include "./exceptions.h"
 #include "./window.h"
+#include "./surface.h"
 
 static zend_object_handlers php_sdl_window_handlers;
 
@@ -80,9 +81,103 @@ PHP_METHOD(Window, __construct)
 	}
 } /* }}} */
 
+/* {{{ proto int Window::getID() */
+PHP_METHOD(Window, getID)
+{
+	php_sdl_window_t *wt = php_sdl_window_fetch(getThis());
+	RETURN_LONG(SDL_GetWindowID(wt->window));
+} /* }}} */
+
+/* {{{ proto int Window::getPixelFormat() */
+PHP_METHOD(Window, getPixelFormat)
+{
+	php_sdl_window_t *wt = php_sdl_window_fetch(getThis());
+	int retval = SDL_GetWindowPixelFormat(wt->window);
+	if (retval == SDL_PIXELFORMAT_UNKNOWN) {
+		php_sdl_error(SDL_GetError());
+	}
+	RETURN_LONG(retval);
+} /* }}} */
+
+/* {{{ proto Window Window::findFromID(int id) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_window_findFromID_info, 0, 0, 1)
+	ZEND_ARG_TYPE_INFO(0, id, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Window, findFromID)
+{
+	php_sdl_window_t *wt;
+	
+	zend_long id;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "l", &id) != SUCCESS) {
+		return;
+	}
+	
+	object_init_ex(return_value, sdlWindow_ce);
+	wt = php_sdl_window_fetch(return_value);
+
+	wt->window = SDL_GetWindowFromID(id);
+	if (wt->window == NULL) {
+		zval_ptr_dtor(return_value);
+		php_sdl_error(SDL_GetError());
+	}
+} /* }}} */
+
+/* {{{ proto array Window::getSize() */
+PHP_METHOD(Window, getSize)
+{
+	php_sdl_window_t *wt = php_sdl_window_fetch(getThis());
+
+	int w;
+	int h;
+
+	SDL_GetWindowSize(wt->window, &w, &h);
+
+	object_init(return_value);
+	add_property_long(return_value, "w", w);
+	add_property_long(return_value, "h", h);
+} /* }}} */
+
+/* {{{ proto array Window::getPosition() */
+PHP_METHOD(Window, getPosition)
+{
+	php_sdl_window_t *wt = php_sdl_window_fetch(getThis());
+
+	int x;
+	int y;
+
+	SDL_GetWindowPosition(wt->window, &x, &y);
+
+	object_init(return_value);
+	add_property_long(return_value, "x", x);
+	add_property_long(return_value, "y", y);
+} /* }}} */
+
+/* {{{ proto array Window::getSurface() */
+PHP_METHOD(Window, getSurface)
+{
+	php_sdl_window_t *wt = php_sdl_window_fetch(getThis());
+
+	SDL_Surface *screen = SDL_GetWindowSurface(wt->window);
+	if (screen == NULL) {
+		php_sdl_error(SDL_GetError());
+	}
+
+	object_init_ex(return_value, sdlSurface_ce);
+	php_sdl_surface_t *st = php_sdl_surface_fetch(return_value);
+	st->surface = screen;
+} /* }}} */
+
 /* {{{ php_sdl_window_methods */
 const zend_function_entry php_sdl_window_methods[] = {
 	PHP_ME(Window, __construct, php_sdl_window___construct_info, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
+	PHP_ME(Window, findFromID, php_sdl_window_findFromID_info, ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
+	PHP_ME(Window, getID, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(Window, getPixelFormat, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(Window, getSize, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(Window, getPosition, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(Window, getSurface, NULL, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 
