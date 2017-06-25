@@ -80,7 +80,7 @@ PHP_METHOD(Texture, __construct)
 	}
 } /* }}} */
 
-/* {{{ proto Texture Texture::createFromSurface(renderer, surface) */
+/* {{{ proto Texture Texture::createFromSurface(Renderer renderer, Surface surface) */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_texture_createFromSurface_info, 0, 0, 2)
 	ZEND_ARG_OBJ_INFO(0, renderer, SDL\\Renderer, 0)
 	ZEND_ARG_OBJ_INFO(0, surface, SDL\\Surface, 0)

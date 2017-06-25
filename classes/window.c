@@ -14,6 +14,7 @@
 #include "./exceptions.h"
 #include "./window.h"
 #include "./surface.h"
+#include "./rect.h"
 
 static zend_object_handlers php_sdl_window_handlers;
 
@@ -124,7 +125,7 @@ PHP_METHOD(Window, findFromID)
 	}
 } /* }}} */
 
-/* {{{ proto array Window::getSize() */
+/* {{{ proto stdObject Window::getSize() */
 PHP_METHOD(Window, getSize)
 {
 	php_sdl_window_t *wt = php_sdl_window_fetch(getThis());
@@ -139,7 +140,7 @@ PHP_METHOD(Window, getSize)
 	add_property_long(return_value, "h", h);
 } /* }}} */
 
-/* {{{ proto array Window::getPosition() */
+/* {{{ proto stdObject Window::getPosition() */
 PHP_METHOD(Window, getPosition)
 {
 	php_sdl_window_t *wt = php_sdl_window_fetch(getThis());
@@ -154,7 +155,7 @@ PHP_METHOD(Window, getPosition)
 	add_property_long(return_value, "y", y);
 } /* }}} */
 
-/* {{{ proto array Window::getSurface() */
+/* {{{ proto Surface Window::getSurface() */
 PHP_METHOD(Window, getSurface)
 {
 	php_sdl_window_t *wt = php_sdl_window_fetch(getThis());
@@ -169,6 +170,117 @@ PHP_METHOD(Window, getSurface)
 	st->surface = screen;
 } /* }}} */
 
+/* {{{ proto Window::setFullscreen(int flags = 0) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_window_setFullscreen_info, 0, 0, 0)
+	ZEND_ARG_TYPE_INFO(0, flags, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Window, setFullscreen)
+{
+	php_sdl_window_t *wt = php_sdl_window_fetch(getThis());
+	int retval;
+
+	zend_long flags = 0;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "|l", &flags) != SUCCESS) {
+		return;
+	}
+
+	retval = SDL_SetWindowFullscreen(wt->window, flags);
+	
+	if (retval) {
+		php_sdl_error(SDL_GetError());
+	}
+} /* }}} */
+
+/* {{{ proto Window::setIcon(surface icon) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_window_setIcon_info, 0, 0, 1)
+	ZEND_ARG_OBJ_INFO(0, surface, SDL\\Surface, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Window, setIcon)
+{
+	php_sdl_window_t *wt = php_sdl_window_fetch(getThis());
+	php_sdl_surface_t *st;
+	
+	zval *surface;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O", &surface, sdlSurface_ce) != SUCCESS) {
+		return;
+	}
+	
+	st = php_sdl_surface_fetch(surface);
+
+	SDL_SetWindowIcon(wt->window, st->surface);
+} /* }}} */
+
+/* {{{ proto Window::setTitle(string title) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_window_setTitle_info, 0, 0, 1)
+	ZEND_ARG_TYPE_INFO(0, title, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Window, setTitle)
+{
+	php_sdl_window_t *wt = php_sdl_window_fetch(getThis());
+	
+	zend_string *title;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "S", &title) != SUCCESS) {
+		return;
+	}
+	
+	SDL_SetWindowTitle(wt->window, ZSTR_VAL(title));
+} /* }}} */
+
+/* {{{ proto Window::updateSurface() */
+PHP_METHOD(Window, updateSurface)
+{
+	php_sdl_window_t *wt = php_sdl_window_fetch(getThis());
+	int retval;
+
+	retval = SDL_UpdateWindowSurface(wt->window);
+
+	if (retval) {
+		php_sdl_error(SDL_GetError());
+	}
+} /* }}} */
+
+/* {{{ proto Window::updateSurfaceRects(array rects) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_window_updateSurfaceRects_info, 0, 0, 1)
+	ZEND_ARG_ARRAY_INFO(0, rects, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Window, updateSurfaceRects)
+{
+	php_sdl_window_t *wt = php_sdl_window_fetch(getThis());
+	int err;
+	zval *rects;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "a", &rects) != SUCCESS) {
+		return;
+	}
+
+	SDL_Rect *sdl_rects = ecalloc(zend_hash_num_elements(Z_ARRVAL_P(rects)), sizeof(SDL_Rect));
+	int i = 0;
+	zval *obj;
+
+	ZEND_HASH_FOREACH_VAL(Z_ARRVAL_P(rects), obj) {
+		if (Z_TYPE_P(obj) == IS_OBJECT && Z_OBJCE_P(obj) == sdlRect_ce) {
+			php_sdl_rect_t *rt = php_sdl_rect_fetch(obj);
+			sdl_rects[i] = rt->rect;
+			i++;
+		}
+	} ZEND_HASH_FOREACH_END();
+
+	err = SDL_UpdateWindowSurfaceRects(wt->window, sdl_rects, i);
+
+	efree(sdl_rects);
+	
+	if (err) {
+		php_sdl_error(SDL_GetError());
+	}
+} /* }}} */
+
 /* {{{ php_sdl_window_methods */
 const zend_function_entry php_sdl_window_methods[] = {
 	PHP_ME(Window, __construct, php_sdl_window___construct_info, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
@@ -178,6 +290,11 @@ const zend_function_entry php_sdl_window_methods[] = {
 	PHP_ME(Window, getSize, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Window, getPosition, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Window, getSurface, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(Window, setFullscreen, php_sdl_window_setFullscreen_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Window, setIcon, php_sdl_window_setIcon_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Window, setTitle, php_sdl_window_setTitle_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Window, updateSurface, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(Window, updateSurfaceRects, php_sdl_window_updateSurfaceRects_info, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 
@@ -198,6 +315,9 @@ PHP_MINIT_FUNCTION(SDL_Window) /* {{{ */
 	php_sdl_window_handlers.clone_obj = NULL;
 
 	php_sdl_window_handlers.offset = XtOffsetOf(php_sdl_window_t, std);
+
+	SDL_WINDOW_CONST(FULLSCREEN);
+	SDL_WINDOW_CONST(FULLSCREEN_DESKTOP);
 
 	return SUCCESS;
 } /* }}} */
