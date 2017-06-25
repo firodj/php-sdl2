@@ -227,7 +227,6 @@ PHP_METHOD(Event, poll)
 
 	for(;;) {
 		if (SDL_PollEvent(&event)) {
-			fprintf(stderr, "_");
 			if (event.type == SDL_USEREVENT && event.user.code == SDL_TIMER_CALLBACK) {
 				Uint32 interval = (Uint32)event.user.data1;
 				php_sdl_timer_t *tmt = (php_sdl_timer_t*)event.user.data2;

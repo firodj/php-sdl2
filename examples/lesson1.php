@@ -4,41 +4,80 @@ SDL\init(SDL\INIT_VIDEO | SDL\INIT_TIMER | SDL\INIT_EVENTS);
 
 $window = new SDL\Window("Wew", SDL\WindowPos::UNDEFINED, SDL\WindowPos::UNDEFINED, 800, 600, SDL\WindowFlags::SHOWN);
 $renderer = new SDL\Renderer($window, -1, SDL\RendererFlags::ACCELERATED);
-$surface = SDL\Surface::loadBMP(__DIR__.'/RyuHayabusa.bmp');
 
-$sprite = SDL\Texture::createFromSurface($renderer, $surface);
 /*$sprite = new SDL\Texture($renderer, SDL\PixelFormat::ARGB8888,
     SDL\TextureAccess::STATIC, 16, 16);
  */
 
 $renderer->setDrawColor(0x00, 0x00, 0xff);
-$renderer->clear();
-$renderer->copy($sprite);
-$renderer->present();
 
 class Waktu extends SDL\Timer
 {
-    public function run(int $ticks) {
-        printf("(got:%d)", $ticks);
+    private $renderer;
+    public $pos;
+
+    public function __construct($renderer) {
+        $this->renderer = $renderer;
+
+        $surface = SDL\Surface::loadBMP(__DIR__.'/RyuHayabusa.bmp');
+        $this->sprite = SDL\Texture::createFromSurface($renderer, $surface);
+
+        $this->rect = new SDL\Rect(22, 26, 17, 32);
+        $this->pos = new SDL\Rect(0, 0, 17, 32);
+    }
+
+    public function run(int $timestamp=null, int $interval=null) {
+        $this->renderer->clear();
+        $this->renderer->copy($this->sprite, $this->rect, $this->pos);
+        $this->renderer->present();
+
+        //printf("(got:%d,%d)", $interval, $timestamp);
     }
 }
 
-$timer = new Waktu();
+SDL\Event::setState(SDL\EventType::FINGERMOTION, false);
+
+$timer = new Waktu($renderer);
 $timer->start(33);
 
-$timeout = SDL\Timer::getTicks() + 3000;
-
+$quit = false;
 do {
     while($e = SDL\Event::poll()) {
-        if (is_object($e)) {
-            printf("[type:%d]", $e->type);
+        switch ($e->type) {
+        case SDL\EventType::KEYDOWN:
+            echo "keydown.".$e->scancode;
+            break;
+        case SDL\EventType::KEYUP:
+            echo "keyup.".$e->scancode;
+            break;
+        case SDL\EventType::QUIT;
+            $quit = true;
+            break;
+        case SDL\EventType::MOUSEMOTION:
+            $timer->pos->x = $e->x;
+            $timer->pos->y = $e->y;
+            break;
+        case SDL\EventType::MOUSEBUTTONDOWN:
+            printf("buttondown.%d(%d,%d)", $e->button, $e->x, $e->y);
+            break;
+        case SDL\EventType::MOUSEBUTTONUP:
+            printf("buttonup.%d", $e->button);
+            break;
+        case SDL\EventType::WINDOWEVENT:
+            if ($e->event == SDL\WindowEvent::CLOSE) {
+                echo "Quit";
+                $quit = true;
+            }
+            printf("windowevent.%d", $e->event);
+            break;
+        default:
+            //printf("[type:%d]", $e->type);
         }
     }
-} while (SDL\Timer::getTicks() < $timeout);
-
+} while (!$quit);
 
 $timer->stop();
-echo SDL\Timer::getTicks();
+echo "stop:".SDL\Timer::getTicks().PHP_EOL;
 
 SDL\quit();
 
