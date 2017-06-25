@@ -61,14 +61,13 @@ static void php_sdl_timer_free_storage(zend_object *object)
 Uint32 _php_sdl_timer_callback(Uint32 interval, void *param)
 {
 	int retval = interval;
-	Uint32 ticks = SDL_GetTicks();
 
 	SDL_Event event;
 	SDL_UserEvent userevent;
 
 	userevent.type = SDL_USEREVENT;
 	userevent.code = SDL_TIMER_CALLBACK;
-	userevent.data1 = ticks;
+	userevent.data1 = interval;
 	userevent.data2 = param;
 
 	event.type = SDL_USEREVENT;
@@ -133,23 +132,25 @@ PHP_METHOD(Timer, getTicks)
 /* }}} */
 
 /* {{{ proto Timer::run() */
-ZEND_BEGIN_ARG_INFO_EX(php_sdl_timer_run_info, 0, 0, 1)
-	ZEND_ARG_TYPE_INFO(0, ticks, IS_LONG, 0)
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_timer_run_info, 0, 0, 0)
+	ZEND_ARG_TYPE_INFO(0, timestamp, IS_LONG, 0)
+	ZEND_ARG_TYPE_INFO(0, interval, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(Timer, run) {} /* }}} */
 
 /* {{{ php_sdl_timer_call_run */
-int php_sdl_timer_call_run(Uint32 ticks, php_sdl_timer_t *tmt)
+int php_sdl_timer_call_run(Uint32 interval, Uint32 timestamp, php_sdl_timer_t *tmt)
 {
 	int retval = 0;
-	zval zresult, zarg0;
+	zval zresult, zarg[2];
 	zend_function *run;
 	zend_fcall_info fci = empty_fcall_info;
 	zend_fcall_info_cache fcc = empty_fcall_info_cache;
 
 	ZVAL_UNDEF(&zresult);
-	ZVAL_LONG(&zarg0, (zend_long)ticks);
+	ZVAL_LONG(&zarg[0], (zend_long)timestamp);
+	ZVAL_LONG(&zarg[1], (zend_long)interval);
 	
 	zend_try {
 		if ((run = zend_hash_find_ptr(&tmt->std.ce->function_table, SDL_G(strings).run))) {							
@@ -158,8 +159,8 @@ int php_sdl_timer_call_run(Uint32 ticks, php_sdl_timer_t *tmt)
 			    fci.retval = &zresult;
 				fci.object = &tmt->std;
 				fci.no_separation = 1;
-				fci.param_count = 1;
-				fci.params = &zarg0;
+				fci.param_count = 2;
+				fci.params = zarg;
 				fcc.initialized = 1;
 				fcc.object = &tmt->std;
 				fcc.calling_scope = tmt->std.ce;
@@ -171,7 +172,8 @@ int php_sdl_timer_call_run(Uint32 ticks, php_sdl_timer_t *tmt)
 				convert_to_long(&zresult);
 				retval = zval_get_long(&zresult);
 				zval_ptr_dtor(&zresult);
-				zval_ptr_dtor(&zarg0);
+				zval_ptr_dtor(&zarg[0]);
+				zval_ptr_dtor(&zarg[1]);
 			}
 		}
 	} zend_catch {

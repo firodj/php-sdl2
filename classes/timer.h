@@ -22,7 +22,7 @@ extern struct _php_sdl_globals_t php_sdl_globals;
 #define SDL_G(v) php_sdl_globals.v
 #define SDL_TIMER_CALLBACK 1001
 
-int php_sdl_timer_call_run(Uint32, php_sdl_timer_t *);
+int php_sdl_timer_call_run(Uint32, Uint32, php_sdl_timer_t *);
 PHP_MINIT_FUNCTION(SDL_Timer);
 
 #endif

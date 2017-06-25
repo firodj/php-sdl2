@@ -14,6 +14,7 @@
 #include "classes/common.h"
 #include "classes/exceptions.h"
 #include "classes/event.h"
+#include "classes/eventtype.h"
 #include "classes/pixelformat.h"
 #include "classes/rect.h"
 #include "classes/renderer.h"
@@ -126,6 +127,7 @@ PHP_MINIT_FUNCTION(sdl2) /* {{{ */
 
 	PHP_MINIT(SDL_Exceptions)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Event)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(SDL_EventType)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_PixelFormat)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Rect)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Renderer)(INIT_FUNC_ARGS_PASSTHRU);

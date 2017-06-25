@@ -57,6 +57,94 @@ zval* php_sdl_event_read_property(zval *object, zval *member, int type, void **c
 
 	if (strcmp(Z_STRVAL_P(member), "type") == 0) {
 		ZVAL_LONG(retval, et->event.type);
+	} else if (strcmp(Z_STRVAL_P(member), "timestamp") == 0) {
+		ZVAL_LONG(retval, et->event.common.timestamp);
+	} else {
+		switch (et->event.type) {
+			case SDL_KEYUP:
+			case SDL_KEYDOWN:
+				if (strcmp(Z_STRVAL_P(member), "windowID") == 0) {
+					ZVAL_LONG(retval, et->event.key.windowID);
+				} else if (strcmp(Z_STRVAL_P(member), "state") == 0) {
+					ZVAL_LONG(retval, et->event.key.state);
+				} else if (strcmp(Z_STRVAL_P(member), "repeat") == 0) {
+					ZVAL_LONG(retval, et->event.key.repeat);
+				} else if (strcmp(Z_STRVAL_P(member), "scancode") == 0) {
+					ZVAL_LONG(retval, et->event.key.keysym.scancode);
+				} else if (strcmp(Z_STRVAL_P(member), "keycode") == 0) {
+					ZVAL_LONG(retval, et->event.key.keysym.sym);
+				} else if (strcmp(Z_STRVAL_P(member), "mod") == 0) {
+					ZVAL_LONG(retval, et->event.key.keysym.mod);
+				}
+				break;
+			case SDL_MOUSEMOTION:
+				if (strcmp(Z_STRVAL_P(member), "windowID") == 0) {
+					ZVAL_LONG(retval, et->event.motion.windowID);
+				} else if (strcmp(Z_STRVAL_P(member), "which") == 0) {
+					ZVAL_LONG(retval, et->event.motion.which);
+				} else if (strcmp(Z_STRVAL_P(member), "state") == 0) {
+					ZVAL_LONG(retval, et->event.motion.state);
+				} else if (strcmp(Z_STRVAL_P(member), "x") == 0) {
+					ZVAL_LONG(retval, et->event.motion.x);
+				} else if (strcmp(Z_STRVAL_P(member), "y") == 0) {
+					ZVAL_LONG(retval, et->event.motion.y);
+				} else if (strcmp(Z_STRVAL_P(member), "xrel") == 0) {
+					ZVAL_LONG(retval, et->event.motion.xrel);
+				} else if (strcmp(Z_STRVAL_P(member), "yrel") == 0) {
+					ZVAL_LONG(retval, et->event.motion.yrel);
+				}
+				break;
+			case SDL_MOUSEBUTTONUP:
+			case SDL_MOUSEBUTTONDOWN:
+				if (strcmp(Z_STRVAL_P(member), "windowID") == 0) {
+					ZVAL_LONG(retval, et->event.button.windowID);
+				} else if (strcmp(Z_STRVAL_P(member), "which") == 0) {
+					ZVAL_LONG(retval, et->event.button.which);
+				} else if (strcmp(Z_STRVAL_P(member), "button") == 0) {
+					ZVAL_LONG(retval, et->event.button.button);
+				} else if (strcmp(Z_STRVAL_P(member), "state") == 0) {
+					ZVAL_LONG(retval, et->event.button.state);
+				} else if (strcmp(Z_STRVAL_P(member), "clicks") == 0) {
+					ZVAL_LONG(retval, et->event.button.clicks);
+				} else if (strcmp(Z_STRVAL_P(member), "x") == 0) {
+					ZVAL_LONG(retval, et->event.button.x);
+				} else if (strcmp(Z_STRVAL_P(member), "y") == 0) {
+					ZVAL_LONG(retval, et->event.button.y);
+				}
+				break;
+			case SDL_MOUSEWHEEL:
+				if (strcmp(Z_STRVAL_P(member), "windowID") == 0) {
+					ZVAL_LONG(retval, et->event.wheel.windowID);
+				} else if (strcmp(Z_STRVAL_P(member), "which") == 0) {
+					ZVAL_LONG(retval, et->event.wheel.which);
+				} else if (strcmp(Z_STRVAL_P(member), "x") == 0) {
+					ZVAL_LONG(retval, et->event.wheel.x);
+				} else if (strcmp(Z_STRVAL_P(member), "y") == 0) {
+					ZVAL_LONG(retval, et->event.wheel.y);
+				} else if (strcmp(Z_STRVAL_P(member), "direction") == 0) {
+					ZVAL_LONG(retval, et->event.wheel.direction);
+				}
+				break;
+			case SDL_FINGERMOTION:
+			case SDL_FINGERDOWN:
+			case SDL_FINGERUP:
+				if (strcmp(Z_STRVAL_P(member), "touchID") == 0) {
+					ZVAL_LONG(retval, et->event.tfinger.touchId);
+				} else if (strcmp(Z_STRVAL_P(member), "fingerID") == 0) {
+					ZVAL_LONG(retval, et->event.tfinger.fingerId);
+				} else if (strcmp(Z_STRVAL_P(member), "x") == 0) {
+					ZVAL_DOUBLE(retval, et->event.tfinger.x);
+				} else if (strcmp(Z_STRVAL_P(member), "y") == 0) {
+					ZVAL_DOUBLE(retval, et->event.tfinger.y);
+				} else if (strcmp(Z_STRVAL_P(member), "dx") == 0) {
+					ZVAL_DOUBLE(retval, et->event.tfinger.dx);
+				} else if (strcmp(Z_STRVAL_P(member), "dy") == 0) {
+					ZVAL_DOUBLE(retval, et->event.tfinger.dy);
+				} else if (strcmp(Z_STRVAL_P(member), "pressure") == 0) {
+					ZVAL_DOUBLE(retval, et->event.tfinger.pressure);
+				}
+				break;
+		}
 	}
 
 	return retval;
@@ -88,17 +176,19 @@ PHP_METHOD(Event, poll)
 		RETURN_FALSE;
 	}
 
-	if (SDL_PollEvent(&event)) {
-		object_init_ex(return_value, sdlEvent_ce);
-		et = php_sdl_event_fetch(return_value);
-		et->event = event;
-
-		if (event.type == SDL_USEREVENT && event.user.code == SDL_TIMER_CALLBACK) {
-			Uint32 ticks = (Uint32)event.user.data1;
-			php_sdl_timer_t *tmt = (php_sdl_timer_t*)event.user.data2;
-			php_sdl_timer_call_run(ticks, tmt);
-		}
-		return;
+	for(;;) {
+		if (SDL_PollEvent(&event)) {
+			if (event.type == SDL_USEREVENT && event.user.code == SDL_TIMER_CALLBACK) {
+				Uint32 interval = (Uint32)event.user.data1;
+				php_sdl_timer_t *tmt = (php_sdl_timer_t*)event.user.data2;
+				php_sdl_timer_call_run(interval, event.user.timestamp, tmt);
+			} else {
+				object_init_ex(return_value, sdlEvent_ce);
+				et = php_sdl_event_fetch(return_value);
+				et->event = event;
+				return;
+			}
+		} else break;
 	}
 
 	RETURN_NULL();

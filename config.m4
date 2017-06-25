@@ -43,6 +43,7 @@ if test "$PHP_SDL2" != "no"; then
     sdl2.c \
     classes/exceptions.c \
     classes/event.c \
+    classes/eventtype.c \
     classes/pixelformat.c \
     classes/rect.c \
     classes/renderer.c \
