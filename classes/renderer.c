@@ -132,11 +132,13 @@ PHP_METHOD(Renderer, setDrawColor)
 	}
 } /* }}} */
 
-/* {{{ proto Renderer::copy(Texture texture, Rect srcrect, Rect dstrect) */
+/* {{{ proto Renderer::copy(Texture texture, Rect srcrect, Rect dstrect, double angle, int flip) */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_renderer_copy_info, 0, 0, 1)
 	ZEND_ARG_OBJ_INFO(0, texture, SDL\\Texture, 0)
 	ZEND_ARG_OBJ_INFO(0, srcrect, SDL\\Rect, 1)
 	ZEND_ARG_OBJ_INFO(0, dstrect, SDL\\Rect, 1)
+	ZEND_ARG_TYPE_INFO(0, angle, IS_DOUBLE, 1)
+	ZEND_ARG_TYPE_INFO(0, flip, IS_LONG, 1)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(Renderer, copy)
@@ -149,8 +151,10 @@ PHP_METHOD(Renderer, copy)
 	zval *texture;
 	zval *srcrect = NULL;
 	zval *dstrect = NULL;
+	double angle = 0;
+	zend_long flip = SDL_FLIP_NONE;
 
-	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O|OO", &texture, sdlTexture_ce, &srcrect, sdlRect_ce, &dstrect, sdlRect_ce) != SUCCESS) {
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O|OOdl", &texture, sdlTexture_ce, &srcrect, sdlRect_ce, &dstrect, sdlRect_ce, &angle, &flip) != SUCCESS) {
 		return;
 	}
 
@@ -163,7 +167,7 @@ PHP_METHOD(Renderer, copy)
 
 	tt = php_sdl_texture_fetch(texture);
 
-	if (SDL_RenderCopy(rt->renderer, tt->texture, srcR, dstR) != 0) {
+	if (SDL_RenderCopyEx(rt->renderer, tt->texture, srcR, dstR, angle, NULL, flip) != 0) {
 		php_sdl_error(SDL_GetError());
 	}
 }

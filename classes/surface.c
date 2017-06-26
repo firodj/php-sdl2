@@ -182,7 +182,7 @@ PHP_METHOD(Surface, blitFromSurface)
 }
 /* }}} */
 
-/* {{{ proto Surface::setColorKey(int flag, int key) */
+/* {{{ proto Surface::setColorKey(bool flag, int key) */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_surface_setColorKey_info, 0, 0, 2)
 	ZEND_ARG_TYPE_INFO(0, enable, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, key, IS_LONG, 0)
