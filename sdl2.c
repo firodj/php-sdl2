@@ -25,6 +25,7 @@
 #include "classes/textureaccess.h"
 #include "classes/timer.h"
 #include "classes/window.h"
+#include "classes/windowevent.h"
 #include "classes/windowflags.h"
 #include "classes/windowpos.h"
 
