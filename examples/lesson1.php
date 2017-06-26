@@ -20,6 +20,7 @@ class Waktu extends SDL\Timer
         $this->renderer = $renderer;
 
         $surface = SDL\Surface::loadBMP(__DIR__.'/RyuHayabusa.bmp');
+        $surface->setColorKey(true, $surface->mapRGB(0xc8, 0xa8, 0xb8));
         $this->sprite = SDL\Texture::createFromSurface($renderer, $surface);
 
         $this->rect = new SDL\Rect(22, 26, 17, 32);
@@ -28,7 +29,7 @@ class Waktu extends SDL\Timer
 
     public function run(int $timestamp=null, int $interval=null) {
         $this->renderer->clear();
-        $this->renderer->copy($this->sprite, $this->rect, $this->pos);
+        $this->renderer->copy($this->sprite, $this->rect, $this->pos, 45);
         $this->renderer->present();
 
         //printf("(got:%d,%d)", $interval, $timestamp);
