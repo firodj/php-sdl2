@@ -19,7 +19,7 @@ zend_class_entry *sdlEvent_ce;
 /* {{{ php_sdl_event_create */
 static zend_object* php_sdl_event_create(zend_class_entry *ce)
 {
-	php_sdl_event_t *et = 
+	php_sdl_event_t *et =
 		(php_sdl_event_t*) ecalloc(1, sizeof(php_sdl_event_t) + zend_object_properties_size(ce));
 
 	zend_object_std_init(&et->std, ce);
@@ -177,7 +177,7 @@ PHP_METHOD(Event, __construct)
 /* {{{ proto void Event::setState(int type, bool enable) */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_event_setState_info, 0, 0, 2)
 	ZEND_ARG_TYPE_INFO(0, type, IS_LONG, 0)
-	ZEND_ARG_INFO(0, enable)
+	ZEND_ARG_TYPE_INFO(0, enable, _IS_BOOL, 0)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(Event, setState)
