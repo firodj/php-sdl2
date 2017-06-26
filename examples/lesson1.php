@@ -1,6 +1,7 @@
 <?php
 
 SDL\init(SDL\INIT_VIDEO | SDL\INIT_TIMER | SDL\INIT_EVENTS);
+SDL\initIMG(SDL\INIT_PNG);
 
 $window = new SDL\Window("Wew", SDL\WindowPos::UNDEFINED, SDL\WindowPos::UNDEFINED, 800, 600, SDL\WindowFlags::SHOWN);
 $renderer = new SDL\Renderer($window, -1, SDL\RendererFlags::ACCELERATED);
@@ -19,7 +20,7 @@ class Waktu extends SDL\Timer
     public function __construct($renderer) {
         $this->renderer = $renderer;
 
-        $surface = SDL\Surface::loadBMP(__DIR__.'/RyuHayabusa.bmp');
+        $surface = SDL\Surface::loadFromFile(__DIR__.'/RyuHayabusa.png');
         $surface->setColorKey(true, $surface->mapRGB(0xc8, 0xa8, 0xb8));
         $this->sprite = SDL\Texture::createFromSurface($renderer, $surface);
 
@@ -80,6 +81,5 @@ do {
 $timer->stop();
 echo "stop:".SDL\Timer::getTicks().PHP_EOL;
 
+SDL\quitIMG();
 SDL\quit();
-
-
