@@ -7,6 +7,14 @@
 #include <SDL2/SDL.h>
 #endif
 
+#ifdef HAVE_SDL2IMG
+#ifdef _WIN32
+	#include <SDL_image.h>
+#else
+	#include <SDL2/SDL_image.h>
+#endif
+#endif
+
 #include "./common.h"
 #include "./exceptions.h"
 #include "./surface.h"
@@ -114,34 +122,44 @@ PHP_METHOD(Surface, __construct)
 }
 /* }}} */
 
-/* {{{ proto Surface Surface::loadBMP(string filename) */
+/* {{{ proto Surface Surface::loadFromFile(string filename) */
 #if PHP_VERSION_ID >= 70200
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(php_sdl_surface_loadBMP_info, 0, 1, SDL\Surface, 0)
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(php_sdl_surface_loadFromFile_info, 0, 1, SDL\Surface, 0)
 #else
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(php_sdl_surface_loadBMP_info, 0, 1, IS_OBJECT, ZEND_NS_NAME(SDL_NS, "Surface"), 0)
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(php_sdl_surface_loadFromFile_info, 0, 1, IS_OBJECT, ZEND_NS_NAME(SDL_NS, "Surface"), 0)
 #endif
 	ZEND_ARG_TYPE_INFO(0, file, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 
-PHP_METHOD(Surface, loadBMP)
+PHP_METHOD(Surface, loadFromFile)
 {
 	php_sdl_surface_t *st;
-
+	SDL_Surface *image;
 	zend_string *filename;
 
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "S", &filename) != SUCCESS) {
 		return;
 	}
 
+#ifdef HAVE_SDL2IMG
+	image = IMG_Load(ZSTR_VAL(filename));
+#else
+	image = SDL_LoadBMP(ZSTR_VAL(filename));
+#endif
+
+	if (image == NULL) {
+		zval_ptr_dtor(return_value);
+
+#ifdef HAVE_SDL2IMG
+		php_sdl_error(IMG_GetError());
+#else
+		php_sdl_error(SDL_GetError());
+#endif
+	}
+	
 	object_init_ex(return_value, sdlSurface_ce);
 	st = php_sdl_surface_fetch(return_value);
-
-	st->surface = SDL_LoadBMP(ZSTR_VAL(filename));
-
-	if (st->surface == NULL) {
-		zval_ptr_dtor(return_value);
-		php_sdl_error(SDL_GetError());
-	}
+	st->surface = image;
 }
 /* }}} */
 
@@ -368,7 +386,7 @@ PHP_METHOD(Surface, setBlendMode)
 /* {{{ php_sdl_surface_methods */
 const zend_function_entry php_sdl_surface_methods[] = {
 	PHP_ME(Surface, __construct, php_sdl_surface___construct_info, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
-	PHP_ME(Surface, loadBMP, php_sdl_surface_loadBMP_info, ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
+	PHP_ME(Surface, loadFromFile, php_sdl_surface_loadFromFile_info, ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
 	PHP_ME(Surface, blitFromSurface, php_sdl_surface_blitFromSurface_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Surface, setColorKey, php_sdl_surface_setColorKey_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Surface, getColorKey, NULL, ZEND_ACC_PUBLIC)

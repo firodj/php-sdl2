@@ -11,6 +11,14 @@
 	#include <SDL2/SDL.h>
 #endif
 
+#ifdef HAVE_SDL2IMG
+#ifdef _WIN32
+	#include <SDL_image.h>
+#else
+	#include <SDL2/SDL_image.h>
+#endif
+#endif
+
 #include "classes/common.h"
 #include "classes/exceptions.h"
 #include "classes/event.h"
@@ -46,6 +54,26 @@ SDL_FUNC(init)
 		php_sdl_error(SDL_GetError());
 	}
 } /* }}} */
+
+#ifdef HAVE_SDL2IMG
+/* {{{ proto void SDL\initIMG(int flags) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_initIMG_info, 0, 0, 1)
+	ZEND_ARG_TYPE_INFO(0, flags, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+
+SDL_FUNC(initIMG)
+{
+	zend_long flags = 0;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "l", &flags) != SUCCESS) {
+		return;
+	}
+	
+	if (IMG_Init(flags) != flags) {
+		php_sdl_error(IMG_GetError());
+	}
+} /* }}} */
+#endif
 
 /* {{{ proto void SDL\initSubSystem(int flags) */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_initSubSystem_info, 0, 0, 1)
@@ -110,6 +138,21 @@ SDL_FUNC(quit)
 	SDL_Quit();
 } /* }}} */
 
+#ifdef HAVE_SDL2IMG
+/* {{{ proto void SDL\quitIMG() */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_quitIMG_info, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
+SDL_FUNC(quitIMG)
+{
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "") != SUCCESS) {
+		return;
+	}
+	
+	IMG_Quit();
+} /* }}} */
+#endif
+
 PHP_MINIT_FUNCTION(sdl2) /* {{{ */
 {
 	SDL_CONST_LONG(INIT_TIMER);
@@ -126,6 +169,11 @@ PHP_MINIT_FUNCTION(sdl2) /* {{{ */
 	SDL_CONST_LONG(MINOR_VERSION);
 	SDL_CONST_LONG(PATCHLEVEL);
 	SDL_CONST_LONG(COMPILEDVERSION);
+
+#ifdef HAVE_SDL2IMG
+	IMG_CONST_LONG(INIT_PNG);
+	IMG_CONST_LONG(INIT_JPG);
+#endif
 
 	PHP_MINIT(SDL_Exceptions)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Event)(INIT_FUNC_ARGS_PASSTHRU);
@@ -158,10 +206,16 @@ PHP_RINIT_FUNCTION(sdl2) /* {{{ */
 /* {{{ sdl2_functions[] */
 const zend_function_entry sdl2_functions[] = {
 	SDL_FE(init)
+#ifdef HAVE_SDL2IMG
+	SDL_FE(initIMG)
+#endif
 	SDL_FE(initSubSystem)
 	SDL_FE(quitSubSystem)
 	SDL_FE(wasInit)
 	SDL_FE(quit)
+#ifdef HAVE_SDL2IMG
+	SDL_FE(quitIMG)
+#endif
 	PHP_FE_END
 }; /* }}} */
 
