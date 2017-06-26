@@ -45,6 +45,7 @@ if test "$PHP_SDL2" != "no"; then
     classes/event.c \
     classes/eventtype.c \
     classes/pixelformat.c \
+    classes/point.c \
     classes/rect.c \
     classes/renderer.c \
     classes/rendererflags.c \

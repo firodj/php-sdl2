@@ -16,6 +16,7 @@
 #include "./texture.h"
 #include "./window.h"
 #include "./rect.h"
+#include "./point.h"
 
 static zend_object_handlers php_sdl_renderer_handlers;
 
@@ -138,6 +139,7 @@ ZEND_BEGIN_ARG_INFO_EX(php_sdl_renderer_copy_info, 0, 0, 1)
 	ZEND_ARG_OBJ_INFO(0, srcrect, SDL\\Rect, 1)
 	ZEND_ARG_OBJ_INFO(0, dstrect, SDL\\Rect, 1)
 	ZEND_ARG_TYPE_INFO(0, angle, IS_DOUBLE, 1)
+	ZEND_ARG_OBJ_INFO(0, center, SDL\\Point, 1)
 	ZEND_ARG_TYPE_INFO(0, flip, IS_LONG, 1)
 ZEND_END_ARG_INFO()
 
@@ -147,14 +149,16 @@ PHP_METHOD(Renderer, copy)
 	php_sdl_texture_t *tt;
 	SDL_Rect *srcR = NULL;
 	SDL_Rect *dstR = NULL;
+	SDL_Point *centerP = NULL;
 
 	zval *texture;
 	zval *srcrect = NULL;
 	zval *dstrect = NULL;
+	zval *center = NULL;
 	double angle = 0;
 	zend_long flip = SDL_FLIP_NONE;
 
-	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O|OOdl", &texture, sdlTexture_ce, &srcrect, sdlRect_ce, &dstrect, sdlRect_ce, &angle, &flip) != SUCCESS) {
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O|OOdOl", &texture, sdlTexture_ce, &srcrect, sdlRect_ce, &dstrect, sdlRect_ce, &angle, &center, sdlPoint_ce, &flip) != SUCCESS) {
 		return;
 	}
 
@@ -164,10 +168,13 @@ PHP_METHOD(Renderer, copy)
 	if (dstrect) {
 		dstR = &php_sdl_rect_fetch(dstrect)->rect;
 	}
+	if (center) {
+		centerP = &php_sdl_point_fetch(center)->point;
+	}
 
 	tt = php_sdl_texture_fetch(texture);
 
-	if (SDL_RenderCopyEx(rt->renderer, tt->texture, srcR, dstR, angle, NULL, flip) != 0) {
+	if (SDL_RenderCopyEx(rt->renderer, tt->texture, srcR, dstR, angle, centerP, flip) != 0) {
 		php_sdl_error(SDL_GetError());
 	}
 }
