@@ -174,7 +174,7 @@ PHP_METHOD(Event, __construct)
 	}
 } /* }}} */
 
-/* {{{ proto void Event::setState(int type, bool enable) */
+/* {{{ proto static void Event::setState(int type, bool enable) */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_event_setState_info, 0, 0, 2)
 	ZEND_ARG_TYPE_INFO(0, type, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO(0, enable, _IS_BOOL, 0)
@@ -182,8 +182,6 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(Event, setState)
 {
-	php_sdl_event_t *et = php_sdl_event_fetch(getThis());
-
 	zend_long type;
 	zend_bool enable;
 
@@ -194,15 +192,13 @@ PHP_METHOD(Event, setState)
 	SDL_EventState(type, enable);
 } /* }}} */
 
-/* {{{ proto bool Event::getState(int type) */
+/* {{{ proto static bool Event::getState(int type) */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_event_getState_info, 0, 0, 1)
 	ZEND_ARG_TYPE_INFO(0, type, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(Event, getState)
 {
-	php_sdl_event_t *et = php_sdl_event_fetch(getThis());
-
 	zend_long type;
 
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "l", &type) != SUCCESS) {
@@ -212,7 +208,7 @@ PHP_METHOD(Event, getState)
 	RETURN_BOOL(SDL_EventState(type, SDL_QUERY));
 } /* }}} */
 
-/* {{{ proto Event Event::poll() */
+/* {{{ proto static Event Event::poll() */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_event_poll_info, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
