@@ -21,7 +21,7 @@ class Waktu extends SDL\Timer
         $this->renderer = $renderer;
 
         $surface = SDL\Surface::loadFromFile(__DIR__.'/RyuHayabusa.png');
-        $surface->setColorKey(true, $surface->mapRGB(0xc8, 0xa8, 0xb8));
+        $surface->setColorKey($surface->mapRGB(0xc8, 0xa8, 0xb8), true);
         $this->sprite = SDL\Texture::createFromSurface($renderer, $surface);
 
         $this->rect = new SDL\Rect(22, 26, 17, 32);
