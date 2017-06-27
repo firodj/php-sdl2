@@ -35,6 +35,7 @@ static void php_sdl_event_dtor_storage(zend_object *object)
 	php_sdl_event_t *et = php_sdl_event_from_obj(object);
 
 	//DESTROY(et->event);
+	//zend_objects_destroy_object(object);
 } /* }}} */
 
 /* {{{ php_sdl_event_free_storage */
@@ -161,17 +162,21 @@ zval* php_sdl_event_read_property(zval *object, zval *member, int type, void **c
 	return retval;
 } /* }}} */
 
-/* {{{ proto Event Event::__construct() */
+/* {{{ proto Event Event::__construct(int type) */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_event___construct_info, 0, 0, 0)
+	ZEND_ARG_TYPE_INFO(0, type, IS_LONG, 1)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(Event, __construct)
 {
 	php_sdl_event_t *et = php_sdl_event_fetch(getThis());
+	zend_long type = 0;
 
-	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "") != SUCCESS) {
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "|l", &type) != SUCCESS) {
 		return;
 	}
+
+	et->event.type = type;
 } /* }}} */
 
 /* {{{ proto static void Event::setState(int type, bool enable) */
@@ -239,10 +244,34 @@ PHP_METHOD(Event, poll)
 	RETURN_NULL();
 } /* }}} */
 
+/* {{{ proto static Event Event::push() */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_event_push_info, 0, 0, 1)
+	ZEND_ARG_OBJ_INFO(0, event, SDL\\Event, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Event, push)
+{
+	SDL_Event event;
+	zval *zevent;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O", &zevent, sdlEvent_ce) != SUCCESS) {
+		RETURN_FALSE;
+	}
+
+	php_sdl_event_t *et = php_sdl_event_fetch(zevent);
+
+	int ok = SDL_PushEvent(&et->event);
+	if (ok == -1) {
+		php_sdl_error(SDL_GetError());
+	}
+	RETURN_BOOL(ok);
+} /* }}} */
+
 /* {{{ php_sdl_event_methods */
 const zend_function_entry php_sdl_event_methods[] = {
 	PHP_ME(Event, __construct, php_sdl_event___construct_info, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
 	PHP_ME(Event, poll, php_sdl_event_poll_info, ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
+	PHP_ME(Event, push, php_sdl_event_push_info, ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
 	PHP_ME(Event, setState, php_sdl_event_setState_info, ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
 	PHP_ME(Event, getState, php_sdl_event_getState_info, ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
 	PHP_FE_END
