@@ -56,8 +56,7 @@ static void php_sdl_timer_free_storage(zend_object *object)
 {
 	php_sdl_timer_t *tmt = php_sdl_timer_from_obj(object);
 
-	zend_object_std_dtor(&tmt->std);
-	efree(tmt);
+	zend_object_std_dtor(object);
 } /* }}} */
 
 /* {{{ _php_sdl_timer_callback */

@@ -47,8 +47,7 @@ static void php_sdl_window_free_storage(zend_object *object)
 {
 	php_sdl_window_t *wt = php_sdl_window_from(object);
 
-	zend_object_std_dtor(&wt->std);
-	efree(wt);
+	zend_object_std_dtor(object);
 } /* }}} */
 
 /* {{{ proto Window Window::__construct(string title, int x, int y, int w, int h[, int flags = 0]) */

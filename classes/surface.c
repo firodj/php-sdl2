@@ -51,8 +51,7 @@ static void php_sdl_surface_free_storage(zend_object *object)
 {
 	php_sdl_surface_t *st = php_sdl_surface_from_obj(object);
 
-	zend_object_std_dtor(&st->std);
-	efree(st);
+	zend_object_std_dtor(object);
 } /* }}} */
 
 /* {{{ php_sdl_surface_write_property */

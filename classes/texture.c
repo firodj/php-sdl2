@@ -44,8 +44,7 @@ static void php_sdl_texture_free_storage(zend_object *object)
 {
 	php_sdl_texture_t *tt = php_sdl_texture_from_obj(object);
 
-	zend_object_std_dtor(&tt->std);
-	efree(tt);
+	zend_object_std_dtor(object);
 } /* }}} */
 
 /* {{{ proto Texture Texture::__construct(Renderer renderer, int format, int access, int w, int h) */

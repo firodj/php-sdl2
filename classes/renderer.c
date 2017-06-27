@@ -49,8 +49,7 @@ static void php_sdl_renderer_free_storage(zend_object *object)
 {
 	php_sdl_renderer_t *rt = php_sdl_renderer_from(object);
 
-	zend_object_std_dtor(&rt->std);
-	efree(rt);
+	zend_object_std_dtor(object);
 } /* }}} */
 
 /* {{{ proto Renderer Renderer::__construct(Window window[, int index = -1[, int flags = 0]]) */

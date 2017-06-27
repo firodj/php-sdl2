@@ -40,8 +40,7 @@ static void php_sdl_rect_free_storage(zend_object *object)
 {
 	php_sdl_rect_t *rt = php_sdl_rect_from_obj(object);
 
-	zend_object_std_dtor(&rt->std);
-	efree(rt);
+	zend_object_std_dtor(object);
 } /* }}} */
 
 /* {{{ php_sdl_rect_read_property */

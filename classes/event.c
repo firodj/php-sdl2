@@ -43,8 +43,7 @@ static void php_sdl_event_free_storage(zend_object *object)
 {
 	php_sdl_event_t *et = php_sdl_event_from_obj(object);
 
-	zend_object_std_dtor(&et->std);
-	efree(et);
+	zend_object_std_dtor(object);
 } /* }}} */
 
 /* {{{ php_sdl_event_read_property */
