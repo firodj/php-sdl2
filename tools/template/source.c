@@ -34,6 +34,8 @@ static void php_sdl_<?= strtolower($className) ?>_dtor_storage(zend_object *obje
 	php_sdl_<?= strtolower($className) ?>_t *<?= abbr($className) ?>t = php_sdl_<?= strtolower($className) ?>_from_obj(object);
 
 	DESTROY(<?= abbr($className) ?>t-><?= strtolower($className) ?>);
+
+	zend_objects_destroy_object(object);
 } /* }}} */
 
 /* {{{ php_sdl_<?= strtolower($className) ?>_free_storage */
