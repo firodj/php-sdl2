@@ -32,6 +32,7 @@ static zend_object* php_sdl_rect_create(zend_class_entry *ce)
 static void php_sdl_rect_dtor_storage(zend_object *object)
 {
 	php_sdl_rect_t *rt = php_sdl_rect_from_obj(object);
+	zend_objects_destroy_object(object);
 } /* }}} */
 
 /* {{{ php_sdl_rect_free_storage */

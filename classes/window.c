@@ -39,6 +39,7 @@ static void php_sdl_window_dtor_storage(zend_object *object)
 	php_sdl_window_t *wt = php_sdl_window_from(object);
 
 	SDL_DestroyWindow(wt->window);
+	zend_objects_destroy_object(object);
 } /* }}} */
 
 /* {{{ php_sdl_window_free_storage */

@@ -32,6 +32,7 @@ static zend_object* php_sdl_point_create(zend_class_entry *ce)
 static void php_sdl_point_dtor_storage(zend_object *object)
 {
 	php_sdl_point_t *pt = php_sdl_point_from_obj(object);
+	zend_objects_destroy_object(object);
 } /* }}} */
 
 /* {{{ php_sdl_point_free_storage */

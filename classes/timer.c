@@ -46,6 +46,7 @@ static void php_sdl_timer_dtor_storage(zend_object *object)
 {
 	php_sdl_timer_t *tmt = php_sdl_timer_from_obj(object);
 	_php_sdl_timer_stop(tmt);
+	zend_objects_destroy_object(object);
 } /* }}} */
 
 /* {{{ php_sdl_timer_free_storage */

@@ -41,6 +41,7 @@ static void php_sdl_renderer_dtor_storage(zend_object *object)
 	php_sdl_renderer_t *rt = php_sdl_renderer_from(object);
 
 	SDL_DestroyRenderer(rt->renderer);
+	zend_objects_destroy_object(object);
 } /* }}} */
 
 /* {{{ php_sdl_renderer_free_storage */

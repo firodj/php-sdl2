@@ -43,6 +43,7 @@ static void php_sdl_surface_dtor_storage(zend_object *object)
 	php_sdl_surface_t *st = php_sdl_surface_from_obj(object);
 
 	SDL_FreeSurface(st->surface);
+	zend_objects_destroy_object(object);
 } /* }}} */
 
 /* {{{ php_sdl_surface_free_storage */

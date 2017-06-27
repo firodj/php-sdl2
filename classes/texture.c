@@ -36,6 +36,7 @@ static void php_sdl_texture_dtor_storage(zend_object *object)
 	php_sdl_texture_t *tt = php_sdl_texture_from_obj(object);
 
 	SDL_DestroyTexture(tt->texture);
+	zend_objects_destroy_object(object);
 } /* }}} */
 
 /* {{{ php_sdl_texture_free_storage */
