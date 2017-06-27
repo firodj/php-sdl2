@@ -140,6 +140,21 @@ PHP_METHOD(Window, getSize)
 	add_property_long(return_value, "h", h);
 } /* }}} */
 
+/* {{{ proto stdObject Window::getDrawableSize() */
+PHP_METHOD(Window, getDrawableSize)
+{
+	php_sdl_window_t *wt = php_sdl_window_fetch(getThis());
+
+	int w;
+	int h;
+
+	SDL_GL_GetDrawableSize(wt->window, &w, &h);
+
+	object_init(return_value);
+	add_property_long(return_value, "w", w);
+	add_property_long(return_value, "h", h);
+} /* }}} */
+
 /* {{{ proto stdObject Window::getPosition() */
 PHP_METHOD(Window, getPosition)
 {
@@ -288,6 +303,7 @@ const zend_function_entry php_sdl_window_methods[] = {
 	PHP_ME(Window, getID, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Window, getPixelFormat, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Window, getSize, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(Window, getDrawableSize, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Window, getPosition, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Window, getSurface, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Window, setFullscreen, php_sdl_window_setFullscreen_info, ZEND_ACC_PUBLIC)

@@ -155,6 +155,21 @@ zval* php_sdl_event_read_property(zval *object, zval *member, int type, void **c
 					ZVAL_DOUBLE(retval, et->event.tfinger.pressure);
 				}
 				break;
+			case SDL_MULTIGESTURE:
+				if (strcmp(Z_STRVAL_P(member), "touchID") == 0) {
+					ZVAL_LONG(retval, et->event.mgesture.touchId);
+				} else if (strcmp(Z_STRVAL_P(member), "theta") == 0) {
+					ZVAL_DOUBLE(retval, et->event.mgesture.dTheta);
+				} else if (strcmp(Z_STRVAL_P(member), "dist") == 0) {
+					ZVAL_DOUBLE(retval, et->event.mgesture.dDist);
+				} else if (strcmp(Z_STRVAL_P(member), "x") == 0) {
+					ZVAL_DOUBLE(retval, et->event.mgesture.x);
+				} else if (strcmp(Z_STRVAL_P(member), "y") == 0) {
+					ZVAL_DOUBLE(retval, et->event.mgesture.y);
+				} else if (strcmp(Z_STRVAL_P(member), "numFingers") == 0) {
+					ZVAL_LONG(retval, et->event.mgesture.numFingers);
+				}
+				break;
 			default:
 				if (et->event.type == SDL_TIMEREVENT) {
 					php_sdl_timer_t *tmt = (php_sdl_timer_t*)et->event.user.data2;
