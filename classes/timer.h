@@ -15,6 +15,7 @@ struct _php_sdl_globals_t {
 };
 
 extern struct _php_sdl_globals_t php_sdl_globals;
+extern Uint32 SDL_TIMEREVENT;
 
 #define php_sdl_timer_from_obj(o) ((php_sdl_timer_t*) ((char*) o - XtOffsetOf(php_sdl_timer_t, std)))
 #define php_sdl_timer_fetch(z) php_sdl_timer_from_obj(Z_OBJ_P(z))

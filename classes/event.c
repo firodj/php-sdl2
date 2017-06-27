@@ -50,11 +50,11 @@ static void php_sdl_event_free_storage(zend_object *object)
 /* {{{ php_sdl_event_read_property */
 zval* php_sdl_event_read_property(zval *object, zval *member, int type, void **cache_slot, zval *rv)
 {
-	zval *retval;
-
 	php_sdl_event_t *et = php_sdl_event_fetch(object);
 
-	retval = rv;
+	zval *retval = rv;
+
+	ZVAL_NULL(retval);
 
 	if (strcmp(Z_STRVAL_P(member), "type") == 0) {
 		ZVAL_LONG(retval, et->event.type);
@@ -156,6 +156,19 @@ zval* php_sdl_event_read_property(zval *object, zval *member, int type, void **c
 					ZVAL_DOUBLE(retval, et->event.tfinger.pressure);
 				}
 				break;
+			default:
+				if (et->event.type == SDL_TIMEREVENT) {
+					php_sdl_timer_t *tmt = (php_sdl_timer_t*)et->event.user.data2;
+
+					if (strcmp(Z_STRVAL_P(member), "interval") == 0) {
+						Uint32 interval = (Uint32)et->event.user.data1;
+						ZVAL_LONG(retval, interval);
+					} else if (strcmp(Z_STRVAL_P(member), "timer") == 0) {
+						ZVAL_OBJ(retval, &tmt->std);
+						GC_REFCOUNT(&tmt->std)++;
+					}
+				}
+				break;
 		}
 	}
 
@@ -219,26 +232,17 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(Event, poll)
 {
-	php_sdl_event_t *et;
 	SDL_Event event;
 
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "") != SUCCESS) {
 		RETURN_FALSE;
 	}
 
-	for(;;) {
-		if (SDL_PollEvent(&event)) {
-			if (event.type == SDL_USEREVENT && event.user.code == SDL_TIMER_CALLBACK) {
-				Uint32 interval = (Uint32)event.user.data1;
-				php_sdl_timer_t *tmt = (php_sdl_timer_t*)event.user.data2;
-				php_sdl_timer_call_run(interval, event.user.timestamp, tmt);
-			} else {
-				object_init_ex(return_value, sdlEvent_ce);
-				et = php_sdl_event_fetch(return_value);
-				et->event = event;
-				return;
-			}
-		} else break;
+	if (SDL_PollEvent(&event)) {
+		object_init_ex(return_value, sdlEvent_ce);
+		php_sdl_event_t *et = php_sdl_event_fetch(return_value);
+		et->event = event;
+		return;
 	}
 
 	RETURN_NULL();
