@@ -13,6 +13,7 @@
 zend_class_entry *sdlEventType_ce;
 zend_class_entry *sdlPixelFormat_ce;
 zend_class_entry *sdlRendererFlags_ce;
+zend_class_entry *sdlRendererFlip_ce;
 zend_class_entry *sdlTextureAccess_ce;
 zend_class_entry *sdlWindowEvent_ce;
 zend_class_entry *sdlWindowFlags_ce;
@@ -53,6 +54,14 @@ PHP_MINIT_FUNCTION(SDL_Const) /* {{{ */
 	SDL_RENDERERFLAGS_CONST(ACCELERATED);
 	SDL_RENDERERFLAGS_CONST(PRESENTVSYNC);
 	SDL_RENDERERFLAGS_CONST(TARGETTEXTURE);
+
+	INIT_NS_CLASS_ENTRY(ce, SDL_NS, "RendererFlip", NULL);
+	sdlRendererFlip_ce = zend_register_internal_class_ex(&ce, NULL);
+	sdlRendererFlip_ce->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL;
+
+	SDL_RENDERERFLIP_CONST(NONE);
+	SDL_RENDERERFLIP_CONST(HORIZONTAL);
+	SDL_RENDERERFLIP_CONST(VERTICAL);
 
 	INIT_NS_CLASS_ENTRY(ce, SDL_NS, "TextureAccess", NULL);
 	sdlTextureAccess_ce = zend_register_internal_class_ex(&ce, NULL);
