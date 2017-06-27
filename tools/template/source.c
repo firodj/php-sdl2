@@ -43,8 +43,9 @@ static void php_sdl_<?= strtolower($className) ?>_free_storage(zend_object *obje
 {
 	php_sdl_<?= strtolower($className) ?>_t *<?= abbr($className) ?>t = php_sdl_<?= strtolower($className) ?>_from_obj(object);
 
-	zend_object_std_dtor(&<?= abbr($className) ?>t->std);
-	efree(<?= abbr($className) ?>t);
+	FREE(<?= abbr($className) ?>t->CUSTOM_BUFFER);
+
+	zend_object_std_dtor(object);
 } /* }}} */
 
 /* {{{ proto <?= $className ?> <?= $className ?>::__construct(string text, int number) */
@@ -83,12 +84,6 @@ PHP_MINIT_FUNCTION(SDL_<?= $className ?>) /* {{{ */
 
 	INIT_NS_CLASS_ENTRY(ce, SDL_NS, "<?= $className ?>", php_sdl_<?= strtolower($className) ?>_methods);
 	sdl<?= $className ?>_ce = zend_register_internal_class_ex(&ce, NULL);
-	// TODO: For Const
-	sdl<?= $className ?>_ce->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL;
-
-	SDL_<?= strtoupper($className) ?>_CONST(SOMECONST);
-
-	// TODO: For Class
 	sdl<?= $className ?>_ce->ce_flags |= ZEND_ACC_FINAL;
 	sdl<?= $className ?>_ce->create_object = php_sdl_<?= strtolower($className) ?>_create;
 	sdl<?= $className ?>_ce->serialize = zend_class_serialize_deny;
