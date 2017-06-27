@@ -13,22 +13,17 @@ if (PHP_SDL2 != 'no')
 		WARNING("SDL2 not enabled; SDL.h header not found in INCLUDE path");
 	} else {
 		EXTENSION('sdl2', 'sdl2.c ' +
+      'classes\\const.c ' +
       'classes\\exceptions.c ' +
       'classes\\event.c ' +
-      'classes\\eventtype.c ' +
-      'classes\\pixelformat.c ' +
       'classes\\point.c ' +
       'classes\\rect.c ' +
       'classes\\renderer.c ' +
-      'classes\\rendererflags.c ' +
       'classes\\surface.c ' +
       'classes\\timer.c ' +
       'classes\\texture.c ' +
-      'classes\\textureaccess.c ' +
-      'classes\\window.c ' +
-      'classes\\windowevent.c ' +
-      'classes\\windowflags.c ' +
-      'classes\\windowpos.c', true);
+      'classes\\window.c ',
+      true);
 		ADD_FLAG('CFLAGS_SDL2', '/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1');
 	}
 }

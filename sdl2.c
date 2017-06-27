@@ -20,22 +20,16 @@
 #endif
 
 #include "classes/common.h"
+#include "classes/const.h"
 #include "classes/exceptions.h"
 #include "classes/event.h"
-#include "classes/eventtype.h"
-#include "classes/pixelformat.h"
 #include "classes/point.h"
 #include "classes/rect.h"
 #include "classes/renderer.h"
-#include "classes/rendererflags.h"
 #include "classes/surface.h"
 #include "classes/texture.h"
-#include "classes/textureaccess.h"
 #include "classes/timer.h"
 #include "classes/window.h"
-#include "classes/windowevent.h"
-#include "classes/windowflags.h"
-#include "classes/windowpos.h"
 
 /* {{{ proto void SDL\init(int flags) */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_init_info, 0, 0, 1)
@@ -175,22 +169,16 @@ PHP_MINIT_FUNCTION(sdl2) /* {{{ */
 	IMG_CONST_LONG(INIT_JPG);
 #endif
 
+	PHP_MINIT(SDL_Const)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Exceptions)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Event)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(SDL_EventType)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(SDL_PixelFormat)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Point)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Rect)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Renderer)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(SDL_RendererFlags)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Surface)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Texture)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(SDL_TextureAccess)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Timer)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(SDL_Window)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(SDL_WindowEvent)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(SDL_WindowFlags)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(SDL_WindowPos)(INIT_FUNC_ARGS_PASSTHRU);
 
 	return SUCCESS;
 } /* }}} */

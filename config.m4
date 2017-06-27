@@ -74,21 +74,15 @@ if test "$PHP_SDL2" != "no"; then
 
   PHP_NEW_EXTENSION(sdl2, \
     sdl2.c \
+    classes/const.c \
     classes/exceptions.c \
     classes/event.c \
-    classes/eventtype.c \
-    classes/pixelformat.c \
     classes/point.c \
     classes/rect.c \
     classes/renderer.c \
-    classes/rendererflags.c \
     classes/surface.c \
     classes/texture.c \
-    classes/textureaccess.c \
     classes/timer.c \
     classes/window.c \
-    classes/windowevent.c \
-    classes/windowflags.c \
-    classes/windowpos.c \
     , $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
 fi
