@@ -155,6 +155,26 @@ PHP_METHOD(Window, getDrawableSize)
 	add_property_long(return_value, "h", h);
 } /* }}} */
 
+/* {{{ proto stdObject Window::getDisplayMode() */
+PHP_METHOD(Window, getDisplayMode)
+{
+	php_sdl_window_t *wt = php_sdl_window_fetch(getThis());
+
+	SDL_DisplayMode mode;
+
+	int err = SDL_GetWindowDisplayMode(wt->window, &mode);
+
+	if (err) {
+		php_sdl_error(SDL_GetError());
+	}
+
+	object_init(return_value);
+	add_property_long(return_value, "format", mode.format);
+	add_property_long(return_value, "w", mode.w);
+	add_property_long(return_value, "h", mode.h);
+	add_property_long(return_value, "refresh_rate", mode.refresh_rate);
+} /* }}} */
+
 /* {{{ proto stdObject Window::getPosition() */
 PHP_METHOD(Window, getPosition)
 {
@@ -306,6 +326,7 @@ const zend_function_entry php_sdl_window_methods[] = {
 	PHP_ME(Window, getDrawableSize, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Window, getPosition, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Window, getSurface, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(Window, getDisplayMode, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Window, setFullscreen, php_sdl_window_setFullscreen_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Window, setIcon, php_sdl_window_setIcon_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Window, setTitle, php_sdl_window_setTitle_info, ZEND_ACC_PUBLIC)
