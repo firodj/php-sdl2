@@ -28,6 +28,24 @@ static zend_object* php_sdl_rect_create(zend_class_entry *ce)
 	return &rt->std;
 } /* }}} */
 
+/* {{{ php_sdl_rect_create */
+static zend_object* php_sdl_rect_clone(zval *object)
+{
+	php_sdl_rect_t	*rt_orig,*rt_new;
+	zend_object		*ret_val;
+
+	rt_orig = php_sdl_rect_fetch(object);
+
+	ret_val = sdlRect_ce->create_object(Z_OBJCE_P(object));
+	rt_new  = php_sdl_rect_from_obj(ret_val);
+
+	rt_new->rect = rt_orig->rect;
+
+	zend_objects_clone_members(&rt_new->std, &rt_orig->std);
+
+	return ret_val;
+}
+
 /* {{{ php_sdl_rect_dtor_storage */
 static void php_sdl_rect_dtor_storage(zend_object *object)
 {
@@ -135,7 +153,7 @@ PHP_MINIT_FUNCTION(SDL_Rect) /* {{{ */
 	memcpy(&php_sdl_rect_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 	php_sdl_rect_handlers.free_obj = php_sdl_rect_free_storage;
 	php_sdl_rect_handlers.dtor_obj = php_sdl_rect_dtor_storage;
-	php_sdl_rect_handlers.clone_obj = NULL;
+	php_sdl_rect_handlers.clone_obj = php_sdl_rect_clone;
 	php_sdl_rect_handlers.read_property = php_sdl_rect_read_property;
 	php_sdl_rect_handlers.write_property = php_sdl_rect_write_property;
 
