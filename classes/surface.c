@@ -163,14 +163,14 @@ PHP_METHOD(Surface, loadFromFile)
 }
 /* }}} */
 
-/* {{{ proto Surface::blitFromSurface(Surface src, Rect srcrect, Rect dstrect) */
-ZEND_BEGIN_ARG_INFO_EX(php_sdl_surface_blitFromSurface_info, 0, 0, 2)
+/* {{{ proto Surface::blit(Surface src, Rect srcrect, Rect dstrect) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_surface_blit_info, 0, 0, 2)
 	ZEND_ARG_OBJ_INFO(0, src, SDL\\Surface, 0)
 	ZEND_ARG_OBJ_INFO(0, srcrect, SDL\\Rect, 0)
 	ZEND_ARG_OBJ_INFO(0, dstrect, SDL\\Rect, 0)
 ZEND_END_ARG_INFO()
 
-PHP_METHOD(Surface, blitFromSurface)
+PHP_METHOD(Surface, blit)
 {
 	php_sdl_surface_t *st = php_sdl_surface_fetch(getThis());
 
@@ -193,6 +193,43 @@ PHP_METHOD(Surface, blitFromSurface)
 	} else dstR = srcR;
 
 	err = SDL_BlitSurface(srcS, srcR, st->surface, dstR);
+
+	if (err) {
+		php_sdl_error(SDL_GetError());
+	}
+}
+/* }}} */
+
+/* {{{ proto Surface::blitScaled(Surface src, Rect srcrect, Rect dstrect) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_surface_blitScaled_info, 0, 0, 2)
+	ZEND_ARG_OBJ_INFO(0, src, SDL\\Surface, 0)
+	ZEND_ARG_OBJ_INFO(0, srcrect, SDL\\Rect, 0)
+	ZEND_ARG_OBJ_INFO(0, dstrect, SDL\\Rect, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Surface, blitScaled)
+{
+	php_sdl_surface_t *st = php_sdl_surface_fetch(getThis());
+
+	zval *surface;
+	zval *srcrect;
+	zval *dstrect = NULL;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "OO|O", &surface, sdlSurface_ce,
+			&srcrect, sdlRect_ce, &dstrect, sdlRect_ce) != SUCCESS) {
+		return;
+	}
+
+	SDL_Rect *dstR = NULL;
+	SDL_Rect *srcR = &php_sdl_rect_fetch(srcrect)->rect;
+	SDL_Surface *srcS = php_sdl_surface_fetch(surface)->surface;
+	int err;
+
+	if (dstrect) {
+		dstR = &php_sdl_rect_fetch(dstrect)->rect;
+	} else dstR = srcR;
+
+	err = SDL_BlitScaled(srcS, srcR, st->surface, dstR);
 
 	if (err) {
 		php_sdl_error(SDL_GetError());
@@ -435,7 +472,8 @@ PHP_METHOD(Surface, setClip)
 const zend_function_entry php_sdl_surface_methods[] = {
 	PHP_ME(Surface, __construct, php_sdl_surface___construct_info, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
 	PHP_ME(Surface, loadFromFile, php_sdl_surface_loadFromFile_info, ZEND_ACC_STATIC|ZEND_ACC_PUBLIC)
-	PHP_ME(Surface, blitFromSurface, php_sdl_surface_blitFromSurface_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Surface, blit, php_sdl_surface_blit_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Surface, blitScaled, php_sdl_surface_blitScaled_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Surface, setColorKey, php_sdl_surface_setColorKey_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Surface, getColorKey, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Surface, mapRGB, php_sdl_surface_mapRGB_info, ZEND_ACC_PUBLIC)
