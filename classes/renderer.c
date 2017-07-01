@@ -431,6 +431,30 @@ PHP_METHOD(Renderer, setClip)
 	}
 } /* }}} */
 
+/* {{{ proto Renderer::setViewport(Rect rect) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_renderer_setViewport_info, 0, 0, 0)
+	ZEND_ARG_OBJ_INFO(0, rect, SDL\\Rect, 1)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Renderer, setViewport)
+{
+	php_sdl_renderer_t *rt = php_sdl_renderer_fetch(getThis());
+
+	zval *zrect = NULL;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O", &zrect, sdlRect_ce) != SUCCESS) {
+		return;
+	}
+
+	SDL_Rect *rect = zrect ? &php_sdl_rect_fetch(zrect)->rect : NULL;
+
+	int err = SDL_RenderSetViewport(rt->renderer, rect);
+
+	if (err) {
+		php_sdl_error(SDL_GetError());
+	}
+} /* }}} */
+
 /* {{{ php_sdl_renderer_methods[] */
 const zend_function_entry php_sdl_renderer_methods[] = {
 	PHP_ME(Renderer, __construct, php_sdl_renderer___construct_info, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
@@ -447,6 +471,7 @@ const zend_function_entry php_sdl_renderer_methods[] = {
 	PHP_ME(Renderer, drawRects, php_sdl_renderer_drawRects_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Renderer, fillRects, php_sdl_renderer_fillRects_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Renderer, setClip, php_sdl_renderer_setClip_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Renderer, setViewport, php_sdl_renderer_setViewport_info, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 
