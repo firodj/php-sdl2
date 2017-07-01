@@ -280,7 +280,7 @@ PHP_METHOD(Window, updateSurface)
 	}
 } /* }}} */
 
-/* {{{ proto Window::updateSurfaceRects(array rects) */
+/* {{{ proto Window::updateSurfaceRects(array<Rect> rects) */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_window_updateSurfaceRects_info, 0, 0, 1)
 	ZEND_ARG_ARRAY_INFO(0, rects, 0)
 ZEND_END_ARG_INFO()
@@ -288,7 +288,6 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(Window, updateSurfaceRects)
 {
 	php_sdl_window_t *wt = php_sdl_window_fetch(getThis());
-	int err;
 	zval *rects;
 
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "a", &rects) != SUCCESS) {
@@ -297,17 +296,16 @@ PHP_METHOD(Window, updateSurfaceRects)
 
 	SDL_Rect *sdl_rects = ecalloc(zend_hash_num_elements(Z_ARRVAL_P(rects)), sizeof(SDL_Rect));
 	int i = 0;
-	zval *obj;
+	zval *zrect;
 
-	ZEND_HASH_FOREACH_VAL(Z_ARRVAL_P(rects), obj) {
-		if (Z_TYPE_P(obj) == IS_OBJECT && Z_OBJCE_P(obj) == sdlRect_ce) {
-			php_sdl_rect_t *rt = php_sdl_rect_fetch(obj);
-			sdl_rects[i] = rt->rect;
-			i++;
+	ZEND_HASH_FOREACH_VAL(Z_ARRVAL_P(rects), zrect) {
+		if (Z_TYPE_P(zrect) == IS_OBJECT && Z_OBJCE_P(zrect) == sdlRect_ce) {
+			php_sdl_rect_t *rct = php_sdl_rect_fetch(zrect);
+			sdl_rects[i++] = rct->rect;
 		}
 	} ZEND_HASH_FOREACH_END();
 
-	err = SDL_UpdateWindowSurfaceRects(wt->window, sdl_rects, i);
+	int err = SDL_UpdateWindowSurfaceRects(wt->window, sdl_rects, i);
 
 	efree(sdl_rects);
 	

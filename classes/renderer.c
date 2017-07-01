@@ -1,6 +1,3 @@
-#ifndef HAVE_PHP_SDL_WINDOW
-#define HAVE_PHP_SDL_WINDOW
-
 #include "php.h"
 #include "zend_interfaces.h"
 
@@ -180,6 +177,236 @@ PHP_METHOD(Renderer, copy)
 }
 /* }}} */
 
+/* {{{ proto Renderer::drawLine(int x1, int y1, int x2, int y2) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_renderer_drawLine_info, 0, 0, 4)
+	ZEND_ARG_TYPE_INFO(0, x1, IS_LONG, 0)
+	ZEND_ARG_TYPE_INFO(0, y1, IS_LONG, 0)
+	ZEND_ARG_TYPE_INFO(0, x2, IS_LONG, 0)
+	ZEND_ARG_TYPE_INFO(0, y2, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Renderer, drawLine)
+{
+	php_sdl_renderer_t *rt = php_sdl_renderer_fetch(getThis());
+
+	zend_long x1;
+	zend_long y1;
+	zend_long x2;
+	zend_long y2;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "llll", &x1, &y1, &x2, &y2) != SUCCESS) {
+		return;
+	}
+
+	if (0 != SDL_RenderDrawLine(rt->renderer, x1, y1, x2, y2)) {
+		php_sdl_error(SDL_GetError());
+	}
+} /* }}} */
+
+/* {{{ proto Renderer::drawPoint(int x, int y) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_renderer_drawPoint_info, 0, 0, 2)
+	ZEND_ARG_TYPE_INFO(0, x, IS_LONG, 0)
+	ZEND_ARG_TYPE_INFO(0, y, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Renderer, drawPoint)
+{
+	php_sdl_renderer_t *rt = php_sdl_renderer_fetch(getThis());
+
+	zend_long x;
+	zend_long y;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "ll", &x, &y) != SUCCESS) {
+		return;
+	}
+
+	if (0 != SDL_RenderDrawPoint(rt->renderer, x, y)) {
+		php_sdl_error(SDL_GetError());
+	}
+} /* }}} */
+
+ /* {{{ proto Renderer::drawRect(Rect rect) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_renderer_drawRect_info, 0, 0, 1)
+	ZEND_ARG_OBJ_INFO(0, rect, SDL\\Rect, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Renderer, drawRect)
+{
+	php_sdl_renderer_t *rt = php_sdl_renderer_fetch(getThis());
+
+	zval* zrect;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O", &zrect, sdlRect_ce) != SUCCESS) {
+		return;
+	}
+
+	php_sdl_rect_t *rct = php_sdl_rect_fetch(zrect);
+
+	if (0 != SDL_RenderDrawRect(rt->renderer, &rct->rect)) {
+		php_sdl_error(SDL_GetError());
+	}
+} /* }}} */
+
+/* {{{ proto Renderer::fillRect(Rect rect) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_renderer_fillRect_info, 0, 0, 1)
+	ZEND_ARG_OBJ_INFO(0, rect, SDL\\Rect, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Renderer, fillRect)
+{
+	php_sdl_renderer_t *rt = php_sdl_renderer_fetch(getThis());
+
+	zval* zrect;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O", &zrect, sdlRect_ce) != SUCCESS) {
+		return;
+	}
+
+	php_sdl_rect_t *rct = php_sdl_rect_fetch(zrect);
+
+	if (0 != SDL_RenderFillRect(rt->renderer, &rct->rect)) {
+		php_sdl_error(SDL_GetError());
+	}
+} /* }}} */
+
+/* {{{ proto Renderer::drawLines(array<Point> points) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_renderer_drawLines_info, 0, 0, 1)
+	ZEND_ARG_ARRAY_INFO(0, points, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Renderer, drawLines)
+{
+	php_sdl_renderer_t *rt = php_sdl_renderer_fetch(getThis());
+
+	zval *zpoints;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "a", &zpoints) != SUCCESS) {
+		return;
+	}
+
+	SDL_Point *sdl_points = ecalloc(zend_hash_num_elements(Z_ARRVAL_P(zpoints)), sizeof(SDL_Point));
+	int i = 0;
+	zval *zpoint;
+
+	ZEND_HASH_FOREACH_VAL(Z_ARRVAL_P(zpoints), zpoint) {
+		if (Z_TYPE_P(zpoint) == IS_OBJECT && Z_OBJCE_P(zpoint) == sdlPoint_ce) {
+			php_sdl_point_t *pt = php_sdl_point_fetch(zpoint);
+			sdl_points[i++] = pt->point;
+		}
+	} ZEND_HASH_FOREACH_END();
+
+	int err = SDL_RenderDrawLines(rt->renderer, sdl_points, i);
+
+	efree(sdl_points);
+
+	if (err) {
+		php_sdl_error(SDL_GetError());
+	}
+} /* }}} */
+
+/* {{{ proto Renderer::drawPoints(array<Point> points) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_renderer_drawPoints_info, 0, 0, 1)
+	ZEND_ARG_ARRAY_INFO(0, points, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Renderer, drawPoints)
+{
+	php_sdl_renderer_t *rt = php_sdl_renderer_fetch(getThis());
+
+	zval *zpoints;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "a", &zpoints) != SUCCESS) {
+		return;
+	}
+
+	SDL_Point *sdl_points = ecalloc(zend_hash_num_elements(Z_ARRVAL_P(zpoints)), sizeof(SDL_Point));
+	int i = 0;
+	zval *zpoint;
+
+	ZEND_HASH_FOREACH_VAL(Z_ARRVAL_P(zpoints), zpoint) {
+		if (Z_TYPE_P(zpoint) == IS_OBJECT && Z_OBJCE_P(zpoint) == sdlPoint_ce) {
+			php_sdl_point_t *pt = php_sdl_point_fetch(zpoint);
+			sdl_points[i++] = pt->point;
+		}
+	} ZEND_HASH_FOREACH_END();
+
+	int err = SDL_RenderDrawPoints(rt->renderer, sdl_points, i);
+
+	efree(sdl_points);
+
+	if (err) {
+		php_sdl_error(SDL_GetError());
+	}
+} /* }}} */
+
+/* {{{ proto Renderer::drawRects(array<Rect> rects) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_renderer_drawRects_info, 0, 0, 1)
+	ZEND_ARG_ARRAY_INFO(0, rects, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Renderer, drawRects)
+{
+	php_sdl_renderer_t *rt = php_sdl_renderer_fetch(getThis());
+	zval *rects;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "a", &rects) != SUCCESS) {
+		return;
+	}
+
+	SDL_Rect *sdl_rects = ecalloc(zend_hash_num_elements(Z_ARRVAL_P(rects)), sizeof(SDL_Rect));
+	int i = 0;
+	zval *zrect;
+
+	ZEND_HASH_FOREACH_VAL(Z_ARRVAL_P(rects), zrect) {
+		if (Z_TYPE_P(zrect) == IS_OBJECT && Z_OBJCE_P(zrect) == sdlRect_ce) {
+			php_sdl_rect_t *rct = php_sdl_rect_fetch(zrect);
+			sdl_rects[i++] = rct->rect;
+		}
+	} ZEND_HASH_FOREACH_END();
+
+	int err = SDL_RenderDrawRects(rt->renderer, sdl_rects, i);
+
+	efree(sdl_rects);
+	
+	if (err) {
+		php_sdl_error(SDL_GetError());
+	}
+} /* }}} */
+
+/* {{{ proto Renderer::fillRects(array<Rect> rects) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_renderer_fillRects_info, 0, 0, 1)
+	ZEND_ARG_ARRAY_INFO(0, rects, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Renderer, fillRects)
+{
+	php_sdl_renderer_t *rt = php_sdl_renderer_fetch(getThis());
+	zval *rects;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "a", &rects) != SUCCESS) {
+		return;
+	}
+
+	SDL_Rect *sdl_rects = ecalloc(zend_hash_num_elements(Z_ARRVAL_P(rects)), sizeof(SDL_Rect));
+	int i = 0;
+	zval *zrect;
+
+	ZEND_HASH_FOREACH_VAL(Z_ARRVAL_P(rects), zrect) {
+		if (Z_TYPE_P(zrect) == IS_OBJECT && Z_OBJCE_P(zrect) == sdlRect_ce) {
+			php_sdl_rect_t *rct = php_sdl_rect_fetch(zrect);
+			sdl_rects[i++] = rct->rect;
+		}
+	} ZEND_HASH_FOREACH_END();
+
+	int err = SDL_RenderFillRects(rt->renderer, sdl_rects, i);
+
+	efree(sdl_rects);
+	
+	if (err) {
+		php_sdl_error(SDL_GetError());
+	}
+} /* }}} */
+
 /* {{{ php_sdl_renderer_methods[] */
 const zend_function_entry php_sdl_renderer_methods[] = {
 	PHP_ME(Renderer, __construct, php_sdl_renderer___construct_info, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
@@ -187,6 +414,14 @@ const zend_function_entry php_sdl_renderer_methods[] = {
 	PHP_ME(Renderer, present, php_sdl_renderer_present_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Renderer, setDrawColor, php_sdl_renderer_setDrawColor_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Renderer, copy, php_sdl_renderer_copy_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Renderer, drawLine, php_sdl_renderer_drawLine_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Renderer, drawPoint, php_sdl_renderer_drawPoint_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Renderer, drawRect, php_sdl_renderer_drawRect_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Renderer, fillRect, php_sdl_renderer_fillRect_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Renderer, drawLines, php_sdl_renderer_drawLines_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Renderer, drawPoints, php_sdl_renderer_drawPoints_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Renderer, drawRects, php_sdl_renderer_drawRects_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Renderer, fillRects, php_sdl_renderer_fillRects_info, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 
@@ -210,8 +445,6 @@ PHP_MINIT_FUNCTION(SDL_Renderer) /* {{{ */
 
 	return SUCCESS;
 } /* }}} */
-
-#endif
 
 /*
  * Local variables:
