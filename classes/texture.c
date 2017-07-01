@@ -113,13 +113,111 @@ PHP_METHOD(Texture, createFromSurface)
 }
 /* }}} */
 
+ /* {{{ proto Texture Texture::query() */
+PHP_METHOD(Texture, query)
+{
+	php_sdl_texture_t *tt = php_sdl_texture_fetch(getThis());
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "") != SUCCESS) {
+		return;
+	}
+
+	Uint32 format;
+	int access, w, h;
+
+	int err = SDL_QueryTexture(tt->texture, &format, &access, &w, &h);
+	if (err) {
+		php_sdl_error(SDL_GetError());
+	}
+
+	object_init(return_value);
+	add_property_long(return_value, "format", format);
+	add_property_long(return_value, "access", access);
+	add_property_long(return_value, "w", w);
+	add_property_long(return_value, "h", h);
+}
+/* }}} */
+
+/* {{{ proto Texture::setAlphaMod(int alpha) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_texture_setAlphaMod_info, 0, 0, 1)
+	ZEND_ARG_TYPE_INFO(0, alpha, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Texture, setAlphaMod)
+{
+	php_sdl_texture_t *tt = php_sdl_texture_fetch(getThis());
+
+	zend_long alpha;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "l", &alpha) != SUCCESS) {
+		return;
+	}
+
+	int err = SDL_SetTextureAlphaMod(tt->texture, alpha);
+
+	if (err) {
+		php_sdl_error(SDL_GetError());
+	}
+ } /* }}} */
+
+/* {{{ proto Texture::setBlendMode(int alpha) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_texture_setBlendMode_info, 0, 0, 1)
+	ZEND_ARG_TYPE_INFO(0, blendMode, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Texture, setBlendMode)
+{
+	php_sdl_texture_t *tt = php_sdl_texture_fetch(getThis());
+
+	zend_long blendMode;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "l", &blendMode) != SUCCESS) {
+		return;
+	}
+
+	int err = SDL_SetTextureBlendMode(tt->texture, blendMode);
+
+	if (err) {
+		php_sdl_error(SDL_GetError());
+	}
+}  /* }}} */
+
+/* {{{ proto Texture::setColorMod(int r, int g, int b) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_texture_setColorMod_info, 0, 0, 3)
+	ZEND_ARG_TYPE_INFO(0, r, IS_LONG, 0)
+	ZEND_ARG_TYPE_INFO(0, g, IS_LONG, 0)
+	ZEND_ARG_TYPE_INFO(0, b, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Texture, setColorMod)
+{
+	php_sdl_texture_t *tt = php_sdl_texture_fetch(getThis());
+
+	zend_long r;
+	zend_long g;
+	zend_long b;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "lll", &r, &g, &b) != SUCCESS) {
+		return;
+	}
+
+	int err = SDL_SetTextureColorMod(tt->texture, r, g, b);
+
+	if (err) {
+		php_sdl_error(SDL_GetError());
+	}
+}  /* }}} */
+
 /* {{{ php_sdl_texture_methods */
 const zend_function_entry php_sdl_texture_methods[] = {
 	PHP_ME(Texture, __construct, php_sdl_texture___construct_info, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
 	PHP_ME(Texture, createFromSurface, php_sdl_texture_createFromSurface_info, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Texture, query, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Texture, setAlphaMod, php_sdl_texture_setAlphaMod_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Texture, setBlendMode, php_sdl_texture_setBlendMode_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Texture, setColorMod, php_sdl_texture_setColorMod_info, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
-
 
 PHP_MINIT_FUNCTION(SDL_Texture) /* {{{ */
 {
