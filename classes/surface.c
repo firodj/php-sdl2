@@ -447,21 +447,21 @@ PHP_METHOD(Surface, setColorMod)
 } /* }}} */
 
 /* {{{ proto Surface::setClip(Rect rect) */
-ZEND_BEGIN_ARG_INFO_EX(php_sdl_surface_setClip_info, 0, 0, 1)
-	ZEND_ARG_OBJ_INFO(0, rect, SDL\\Rect, 0)
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_surface_setClip_info, 0, 0, 0)
+	ZEND_ARG_OBJ_INFO(0, rect, SDL\\Rect, 1)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(Surface, setClip)
 {
 	php_sdl_surface_t *st = php_sdl_surface_fetch(getThis());
 
-	zval *zrect;
+	zval *zrect = NULL;
 
 	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O", &zrect, sdlRect_ce) != SUCCESS) {
 		return;
 	}
 
-	SDL_Rect *rect = &php_sdl_rect_fetch(zrect)->rect;
+	SDL_Rect *rect = zrect ? &php_sdl_rect_fetch(zrect)->rect : NULL;
 
 	SDL_bool retval = SDL_SetClipRect(st->surface, rect);
 
