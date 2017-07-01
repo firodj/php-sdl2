@@ -361,7 +361,7 @@ PHP_METHOD(Surface, setAlphaMod)
 	}
 } /* }}} */
 
-/* {{{ proto Surface::setBlendMod(int alpha) */
+/* {{{ proto Surface::setBlendMode(int alpha) */
 ZEND_BEGIN_ARG_INFO_EX(php_sdl_surface_setBlendMode_info, 0, 0, 1)
 	ZEND_ARG_TYPE_INFO(0, blendMode, IS_LONG, 0)
 ZEND_END_ARG_INFO()
@@ -383,6 +383,54 @@ PHP_METHOD(Surface, setBlendMode)
 	}
 } /* }}} */
 
+/* {{{ proto Surface::setColorMod(int r, int g, int b) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_surface_setColorMod_info, 0, 0, 3)
+	ZEND_ARG_TYPE_INFO(0, r, IS_LONG, 0)
+	ZEND_ARG_TYPE_INFO(0, g, IS_LONG, 0)
+	ZEND_ARG_TYPE_INFO(0, b, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Surface, setColorMod)
+{
+	php_sdl_surface_t *st = php_sdl_surface_fetch(getThis());
+
+	zend_long r;
+	zend_long g;
+	zend_long b;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "lll", &r, &g, &b) != SUCCESS) {
+		return;
+	}
+
+	int err = SDL_SetSurfaceColorMod(st->surface, r, g, b);
+
+	if (err) {
+		php_sdl_error(SDL_GetError());
+	}
+} /* }}} */
+
+/* {{{ proto Surface::setClip(Rect rect) */
+ZEND_BEGIN_ARG_INFO_EX(php_sdl_surface_setClip_info, 0, 0, 1)
+	ZEND_ARG_OBJ_INFO(0, rect, SDL\\Rect, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Surface, setClip)
+{
+	php_sdl_surface_t *st = php_sdl_surface_fetch(getThis());
+
+	zval *zrect;
+
+	if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), "O", &zrect, sdlRect_ce) != SUCCESS) {
+		return;
+	}
+
+	SDL_Rect *rect = &php_sdl_rect_fetch(zrect)->rect;
+
+	SDL_bool retval = SDL_SetClipRect(st->surface, rect);
+
+	RETURN_BOOL(retval);
+} /* }}} */
+
 /* {{{ php_sdl_surface_methods */
 const zend_function_entry php_sdl_surface_methods[] = {
 	PHP_ME(Surface, __construct, php_sdl_surface___construct_info, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
@@ -396,6 +444,8 @@ const zend_function_entry php_sdl_surface_methods[] = {
 	PHP_ME(Surface, getRGBA, php_sdl_surface_getRGBA_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Surface, setAlphaMod, php_sdl_surface_setAlphaMod_info, ZEND_ACC_PUBLIC)
 	PHP_ME(Surface, setBlendMode, php_sdl_surface_setBlendMode_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Surface, setColorMod, php_sdl_surface_setColorMod_info, ZEND_ACC_PUBLIC)
+	PHP_ME(Surface, setClip, php_sdl_surface_setClip_info, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 }; /* }}} */
 
